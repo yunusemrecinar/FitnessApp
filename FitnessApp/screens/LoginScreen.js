@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons'; // Ensure you have this dependency installed
+import * as AppleAuthentication from "expo-apple-authentication";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import FlatButton from '../components/ui/FlatButton';
 import Logo from "../components/ui/Logo";
-import { login } from "../util/http";
+import { getUserProfile, login } from "../util/http";
 
 const androidClientId = '733094219236-3jtjnt0g94s48l58mlt252q6il7kph68.apps.googleusercontent.com';
 const iosClientId = '733094219236-3ug4c0ue4glrh1gjap95qisa8mc74sn5.apps.googleusercontent.com';
@@ -22,12 +23,35 @@ const LoginScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [request, response, promptAsync] = Google.useAuthRequest(config);
-   
+
     const handleToken = () => {
         if (response?.type === "success") {
             const { authentication } = response;
             const token = authentication?.accessToken;
-            console.log("access token", token);
+            const user = getUserProfile(token);
+            
+            console.log(token, user);
+        }
+    }
+
+    const handleSignInApple = async () => {
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            console.log({
+                id: credential.identityToken,
+                authorization_code: credential.authorizationCode,
+            });
+        } catch (error) {
+            console.log(error);
+            if (error.code === "ERR_REQUEST_CANCELED") {
+                Alert.alert('Error', error.code || 'Something went wrong');
+            } else {
+            }
         }
     }
 
@@ -62,7 +86,6 @@ const LoginScreen = ({ navigation }) => {
                     <View style={styles.passwordContainer}>
                         <TextInput
                             style={[styles.input, { flex: 1, paddingRight: 40 }]}
-                            placeholder="Password"
                             secureTextEntry={!showPassword}
                             onChangeText={text => setPassword(text)}
                             value={password}
@@ -80,9 +103,7 @@ const LoginScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                {/* <Button style={styles.signIn} title="Sign in" onPress={handleLogin} /> */}
                 <FlatButton>Sign in</FlatButton>
-                {/* <Button title="Register" onPress={() => navigation.navigate('Register')} /> */}
                 <View style={styles.dividerContainer}>
                     <View style={styles.line} />
                     <Text style={styles.text}>Or sign in with</Text>
@@ -96,7 +117,7 @@ const LoginScreen = ({ navigation }) => {
                             </View>
                         </View>
                     </Pressable>
-                    <Pressable style={({ pressed }) => [pressed && styles.pressed]}>
+                    <Pressable onPress={() => handleSignInApple()} style={({ pressed }) => [pressed && styles.pressed]}>
                         <View style={styles.appleCircle}>
                             <View style={styles.appleIcon}>
                                 <Image style={styles.image} source={require('../assets/images/apple-logo.png')} />
@@ -108,10 +129,9 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.switchRegister}>
                 <View style={styles.switchRegisterWrapper}>
                     <Text style={styles.fontRegular}>Don't have an account?</Text>
-                    <Pressable >
+                    <Pressable onPress={() => navigation.navigate('Register')} >
                         <Text style={[styles.switchButton, styles.fontBold]}>Sign Up</Text>
                     </Pressable>
-                    {/* <Button style={styles.fontBold} title='Sign Up' /> */}
                 </View>
             </View>
             
@@ -201,10 +221,10 @@ const styles = StyleSheet.create({
     googleCircle: {
         backgroundColor: '#FEFEFE',
         padding: 18,
-        borderRadius: '100%',
+        borderRadius: 30,
         // Shadow properties for iOS
         shadowColor: '#0000000',
-        shadowOffset: { width: 4, height: 4 },
+        shadowOffset: { width: 2, height: 4 },
         shadowOpacity: 0.15,
         shadowRadius: 4,
         // Elevation for Android
@@ -213,11 +233,11 @@ const styles = StyleSheet.create({
     appleCircle: {
         backgroundColor: '#FEFEFE',
         padding: 18,
-        borderRadius: '100%',
+        borderRadius: 30,
         paddingTop: 16,
         // Shadow properties for iOS
         shadowColor: '#0000000',
-        shadowOffset: { width: 4, height: 4 },
+        shadowOffset: { width: 2, height: 4 },
         shadowOpacity: 0.15,
         shadowRadius: 4,
         // Elevation for Android

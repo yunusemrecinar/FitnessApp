@@ -62,7 +62,24 @@ export const getUser = async () => {
                 Authorization: token,
             },
         });
-        return response.data;
+        const user = response.data;
+        return user;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+// USER INFORMATION (GOOGLE)
+export const getUserProfile = async (token) => {
+    if (!token) return;
+    try {
+        const response = await axios.get("https://www.googleapis.com/userinfo/v2/me", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log(response.data);
     } catch (error) {
         throw error.response.data;
     }
