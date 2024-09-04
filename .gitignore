@@ -40,6 +40,8 @@ yarn-error.*
 /public/storage
 /storage/*.key
 /FitnessL/vendor
+/FitnessApp/ios
+/FitnessApp/android
 /vendor
 .env
 .env.backup

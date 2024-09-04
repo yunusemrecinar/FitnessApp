@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Button } from "react-native";
+import { Alert, Button, Text, View } from "react-native";
 import { getUser, logout } from "../util/http";
 
 const ProfileScreen = ({ navigation }) => {
@@ -9,7 +9,7 @@ const ProfileScreen = ({ navigation }) => {
         const fetchUserData = async () => {
             try {
                 const userData = await getUser();
-                setUser(user);
+                setUser(userData);
             } catch (error) {
                 Alert.alert('Error', error.message || 'Failed to load user data');
             }

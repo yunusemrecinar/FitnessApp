@@ -47,24 +47,19 @@ class AuthController extends Controller
         $userKey = 'user:' . $request->email;
         $user = Redis::hgetall($userKey);
 
-        if (!$user) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        if (!Hash::check($request->password, $user['password'])) {
+        if (!$user || !Hash::check($request->password, $user['password'])) {
             return response()->json([
                 'message' => 'Invalid credentials'
             ], 401);
         }
 
         $token = Str::random(60);
-        Redis::set('user_token' . $token, $user['email']);
-        Redis::expire('user_token' . $token, 3600);
+        Redis::set('auth:tokens:' . $token, $userKey);
+        Redis::expire('auth:tokens:' . $token, 3600);
 
         return response()->json([
-            'token' => $token
+            'token' => $token,
+            'message' => 'Login successful'
         ], 200);
     }
 
@@ -85,7 +80,15 @@ class AuthController extends Controller
 
     public function user(Request $request) 
     {
-        $userKey = 'user:' . $request->email;
+        $token = $request->header('Authorization');
+
+        $userKey = Redis::get('auth:tokens:' . $token);
+
+        if (!$userKey) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+
+        // Retrieve user data from Redis using the user key
         $user = Redis::hgetall($userKey);
 
         return response()->json([

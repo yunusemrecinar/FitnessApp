@@ -1,4 +1,6 @@
-import { Alert, Button, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Alert, Button, SafeAreaView, Text, TextInput } from "react-native";
+import { register } from "../util/http";
 
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -15,7 +17,7 @@ const RegisterScreen = ({ navigation }) => {
     };
 
     return (
-        <View style={{ padding: 20 }}>
+        <SafeAreaView>
             <Text>Email</Text>
             <TextInput value={email} onChangeText={setEmail} style={{ borderWidth: 1, marginBottom: 20 }} />
             <Text>Passowrd</Text>
@@ -23,10 +25,10 @@ const RegisterScreen = ({ navigation }) => {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                style={{ borderWidth: 1, marginEnd: 20 }}
+                style={{ borderWidth: 1, marginBottom: 20 }}
             />
             <Button title="Register" onPress={handleRegister} />
-        </View>
+        </SafeAreaView>
     );
 }
 

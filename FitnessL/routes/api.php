@@ -16,5 +16,5 @@ Route::get('/hello-world', [FitnessAppController::class, 'helloWorld']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/user', [AuthController::class, 'user'])->middleware('auth.token');
+Route::get('/user', [AuthController::class, 'user']);
 // Auth routes Ends
