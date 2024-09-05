@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
                     await googleLoginRegister(token, user);
                     Alert.alert('Success', 'Logged in successfully');
                     authCtx.authenticate(token);
-                    navigation.navigate('Profile');
+                    navigation.navigate('Home');
                 } catch (error) {
                     return error;
                 }
@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
             authCtx.authenticate(response);
-            navigation.navigate('Profile');
+            navigation.navigate('Home');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
@@ -114,6 +114,9 @@ const LoginScreen = ({ navigation }) => {
                             />
                         </TouchableOpacity>
                     </View>
+                </View>
+                <View style={styles.forgotPassword}>
+                    <Text style={[styles.fontRegular, styles.forgotPasswordText]}>Forgot password?</Text>
                 </View>
                 <FlatButton onPress={handleLogin} >Sign in</FlatButton>
                 <View style={styles.dividerContainer}>
@@ -177,7 +180,6 @@ const styles = StyleSheet.create({
     },
     inputForm: {
         marginTop: 50,
-        marginBottom: 40
     },
     label: {
         fontFamily: 'baloo-regular',
@@ -197,13 +199,23 @@ const styles = StyleSheet.create({
     },
     passwordContainer: {
         flexDirection: 'row',
-        position: 'relative'
+        position: 'relative',
     },
     icon: {
         padding: 15,
         paddingRight: 0,
         position: 'absolute',
         right: 15
+    },
+    forgotPassword: {
+        marginTop: 3,
+        marginBottom: 21
+    },
+    forgotPasswordText: {
+        textDecorationLine: 'underline',
+        fontFamily: 'baloo-regular',
+        fontSize: 16,
+        color: '#B4B4B4'
     },
     signIn: {
         backgroundColor: '#29D165',
