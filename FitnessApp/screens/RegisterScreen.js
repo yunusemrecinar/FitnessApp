@@ -67,7 +67,7 @@ const RegisterScreen = ({ navigation }) => {
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
             authCtx.authenticate(response);
-            navigation.navigate('Home');
+            navigation.navigate('AuthenticatedStack');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }

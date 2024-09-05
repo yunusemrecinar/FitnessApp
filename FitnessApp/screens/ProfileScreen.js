@@ -26,17 +26,18 @@ const ProfileScreen = ({ navigation }) => {
             await logout();
             Alert.alert('Success', 'Logged out successfully');
             authCtx.logout();
-            navigation.navigate('Login');
+            navigation.replace('AuthStack');
         } catch (error) {
             Alert.alert('Error', error.message || 'Failed to log out');
         }
     };
 
+    console.log(user);
     return (
         <View style={{ padding: 20 }}>
             {user ? (
                 <>
-                    <Text>Welcome, {user.name}!</Text>
+                    <Text>Welcome, {user.name || user.email}!</Text>
                     <Button title="Logout" onPress={handleLogout} />
                 </>
             ) : (

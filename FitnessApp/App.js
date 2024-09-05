@@ -152,29 +152,51 @@ function AuthenticatedStack() {
 
 function Navigation() {
   const authCtx = useContext(AuthContext);
-
-  return (
-    <NavigationContainer>
-      {!authCtx.isAuthenticated ? <AuthStack /> : <AuthenticatedStack />}
-    </NavigationContainer>
-  );
-}
-
-function Root() {
-  const authCtx = useContext(AuthContext);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem('token');
 
       if (storedToken) {
+        setIsAuthenticated(true);
         authCtx.authenticate(storedToken);
       }
+
+      setIsLoading(false);
     }
 
     fetchToken();
   }, []);
 
+  if (isLoading) {
+    return <CustomSplashScreen />;
+  }
+ 
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName={isAuthenticated ? 'AuthenticatedStack' : 'AuthStack'}
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="AuthStack"
+          component={AuthStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AuthenticatedStack"
+          component={AuthenticatedStack}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function Root() {
   return <Navigation />;
 }
 

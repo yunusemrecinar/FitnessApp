@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
                     await googleLoginRegister(token, user);
                     Alert.alert('Success', 'Logged in successfully');
                     authCtx.authenticate(token);
-                    navigation.navigate('Home');
+                    navigation.navigate('AuthenticatedStack');
                 } catch (error) {
                     return error;
                 }
@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
             authCtx.authenticate(response);
-            navigation.navigate('Home');
+            navigation.navigate('AuthenticatedStack');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
