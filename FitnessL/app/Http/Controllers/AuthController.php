@@ -37,6 +37,32 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function googleLoginRegister(Request $request) 
+    {
+        $userKey = 'user' . $request->user['email'];
+        if (Redis::exists($userKey)) {
+            return response()->json([
+                'message' => 'User registered successfully'
+            ], 201); 
+        }
+
+        Redis::hmset($userKey, [
+            'id' => $request->user['id'],
+            'email' => $request->user['email'],
+            'family_name' => $request->user['family_name'],
+            'given_name' => $request->user['given_name'],
+            'name' => $request->user['name'],
+            'picture' => $request->user['picture'],
+            'verified_email' => true
+        ]);
+        Redis::set('auth:tokens:' . $request->token, $request->user['email']);
+        Redis::expire('auth:tokens:' . $request->token, 3600);
+
+        return response()->json([
+            'message' => 'Login successful'
+        ], 200);
+    }
+
     public function login(Request $request) 
     {
         $request->validate([
@@ -67,7 +93,7 @@ class AuthController extends Controller
     {
         $token = $request->header('Authorization');
 
-        if (Redis::del('user_token' . $token)) {
+        if (Redis::del('auth:tokens:' . $token)) {
             return response()->json([
                 'message' => 'Logged out succeessfully'
             ], 200);

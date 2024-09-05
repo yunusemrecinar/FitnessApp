@@ -33,6 +33,21 @@ export const login = async (email, password) => {
     }
 };
 
+// GOOGLE AUTH
+export const googleLoginRegister = async (token, user) => {
+    try {
+        const response = await axios.post(`${API_URL}/googleLoginRegister`, {
+            token: token,
+            user: user
+        });
+        const data = response.data;
+
+        return data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
 // LOGOUT
 export const logout = async () => {
     const token = await AsyncStorage.getItem('token');

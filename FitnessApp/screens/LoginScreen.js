@@ -2,11 +2,12 @@ import { Ionicons } from '@expo/vector-icons'; // Ensure you have this dependenc
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import FlatButton from '../components/ui/FlatButton';
 import Logo from "../components/ui/Logo";
-import { getUserProfile, login } from "../util/http";
+import { AuthContext } from '../store/auth-context';
+import { getUserProfile, googleLoginRegister, login } from "../util/http";
 
 const androidClientId = '733094219236-3jtjnt0g94s48l58mlt252q6il7kph68.apps.googleusercontent.com';
 const iosClientId = '733094219236-3ug4c0ue4glrh1gjap95qisa8mc74sn5.apps.googleusercontent.com';
@@ -14,6 +15,7 @@ const iosClientId = '733094219236-3ug4c0ue4glrh1gjap95qisa8mc74sn5.apps.googleus
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
+    const authCtx = useContext(AuthContext);
     const config = {
         androidClientId,
         iosClientId
@@ -24,13 +26,20 @@ const LoginScreen = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-    const handleToken = () => {
+    const handleToken = async () => {
         if (response?.type === "success") {
             const { authentication } = response;
             const token = authentication?.accessToken;
             const user = getUserProfile(token);
             
-            console.log(token, user);
+            try {
+                await googleLoginRegister(token, user)
+                Alert.alert('Success', 'Logged in successfully');
+                authCtx.authenticate(token);
+                navigation.navigate('Profile');
+            } catch (error) {
+                return error;
+            }
         }
     }
 
@@ -61,8 +70,9 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            await login(email, password);
+            const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
+            authCtx.authenticate(response);
             navigation.navigate('Profile');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
@@ -103,7 +113,7 @@ const LoginScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <FlatButton>Sign in</FlatButton>
+                <FlatButton onPress={handleLogin} >Sign in</FlatButton>
                 <View style={styles.dividerContainer}>
                     <View style={styles.line} />
                     <Text style={styles.text}>Or sign in with</Text>

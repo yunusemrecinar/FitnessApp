@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Text, View } from "react-native";
+import { AuthContext } from "../store/auth-context";
 import { getUser, logout } from "../util/http";
 
 const ProfileScreen = ({ navigation }) => {
+    const authCtx = useContext(AuthContext);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -21,6 +23,7 @@ const ProfileScreen = ({ navigation }) => {
         try {
             await logout();
             Alert.alert('Success', 'Logged out successfully');
+            authCtx.logout();
             navigation.navigate('Login');
         } catch (error) {
             Alert.alert('Error', error.message || 'Failed to log out');

@@ -30,7 +30,7 @@ const RegisterScreen = ({ navigation }) => {
             const token = authentication?.accessToken;
             const user = getUserProfile(token);
 
-            console.log(token, user);
+            // console.log(token, user);
         }
     }
 

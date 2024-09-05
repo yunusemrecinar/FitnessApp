@@ -15,6 +15,7 @@ Route::get('/hello-world', [FitnessAppController::class, 'helloWorld']);
 // Auth routes Begins
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/googleLoginRegister', [AuthController::class, 'googleLoginRegister']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
 // Auth routes Ends
