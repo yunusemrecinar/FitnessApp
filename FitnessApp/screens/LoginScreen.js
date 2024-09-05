@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons'; // Ensure you have this dependency installed
+import { Ionicons } from '@expo/vector-icons';
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
@@ -30,15 +30,17 @@ const LoginScreen = ({ navigation }) => {
         if (response?.type === "success") {
             const { authentication } = response;
             const token = authentication?.accessToken;
-            const user = getUserProfile(token);
+            const user = await getUserProfile(token);
             
-            try {
-                await googleLoginRegister(token, user)
-                Alert.alert('Success', 'Logged in successfully');
-                authCtx.authenticate(token);
-                navigation.navigate('Profile');
-            } catch (error) {
-                return error;
+            if (user.hasOwnProperty("email")) {
+                try {
+                    await googleLoginRegister(token, user);
+                    Alert.alert('Success', 'Logged in successfully');
+                    authCtx.authenticate(token);
+                    navigation.navigate('Profile');
+                } catch (error) {
+                    return error;
+                }
             }
         }
     }
@@ -51,12 +53,12 @@ const LoginScreen = ({ navigation }) => {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
-            console.log({
-                id: credential.identityToken,
-                authorization_code: credential.authorizationCode,
-            });
+            // console.log({
+            //     id: credential.identityToken,
+            //     authorization_code: credential.authorizationCode,
+            // });
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             if (error.code === "ERR_REQUEST_CANCELED") {
                 Alert.alert('Error', error.code || 'Something went wrong');
             } else {
@@ -138,9 +140,9 @@ const LoginScreen = ({ navigation }) => {
             </View>
             <View style={styles.switchRegister}>
                 <View style={styles.switchRegisterWrapper}>
-                    <Text style={styles.fontRegular}>Don't have an account?</Text>
+                    <Text style={[styles.fontRegular, styles.switchText]}>Don't have an account?</Text>
                     <Pressable onPress={() => navigation.navigate('Register')} >
-                        <Text style={[styles.switchButton, styles.fontBold]}>Sign Up</Text>
+                        <Text style={[styles.switchButton, styles.fontBold, styles.switchText]}>Sign Up</Text>
                     </Pressable>
                 </View>
             </View>
@@ -278,5 +280,8 @@ const styles = StyleSheet.create({
     switchButton: {
         paddingLeft: 4,
         color: '#29D165'
+    },
+    switchText: {
+        fontSize: 16
     }
 });

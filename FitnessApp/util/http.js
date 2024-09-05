@@ -44,7 +44,7 @@ export const googleLoginRegister = async (token, user) => {
 
         return data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 }
 
@@ -94,7 +94,7 @@ export const getUserProfile = async (token) => {
             }
         });
 
-        console.log(response.data);
+        return response.data;
     } catch (error) {
         throw error.response.data;
     }

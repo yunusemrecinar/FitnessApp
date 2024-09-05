@@ -10,8 +10,10 @@ const ProfileScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userData = await getUser();
-                setUser(userData);
+                setTimeout(async () => {
+                    const userData = await getUser();
+                    setUser(userData);
+                }, 1000)
             } catch (error) {
                 Alert.alert('Error', error.message || 'Failed to load user data');
             }
@@ -34,7 +36,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={{ padding: 20 }}>
             {user ? (
                 <>
-                    <Text>Welcome, {user.email}!</Text>
+                    <Text>Welcome, {user.name}!</Text>
                     <Button title="Logout" onPress={handleLogout} />
                 </>
             ) : (

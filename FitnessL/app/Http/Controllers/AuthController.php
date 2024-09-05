@@ -39,22 +39,20 @@ class AuthController extends Controller
 
     public function googleLoginRegister(Request $request) 
     {
-        $userKey = 'user' . $request->user['email'];
-        if (Redis::exists($userKey)) {
-            return response()->json([
-                'message' => 'User registered successfully'
-            ], 201); 
+        $userKey = 'user:' . $request->user['email'];
+        
+        if (!Redis::exists($userKey)) {
+            Redis::hmset($userKey, [
+                'id' => $request->user['id'],
+                'email' => $request->user['email'],
+                'family_name' => $request->user['family_name'],
+                'given_name' => $request->user['given_name'],
+                'name' => $request->user['name'],
+                'picture' => $request->user['picture'],
+                'verified_email' => true
+            ]);
         }
 
-        Redis::hmset($userKey, [
-            'id' => $request->user['id'],
-            'email' => $request->user['email'],
-            'family_name' => $request->user['family_name'],
-            'given_name' => $request->user['given_name'],
-            'name' => $request->user['name'],
-            'picture' => $request->user['picture'],
-            'verified_email' => true
-        ]);
         Redis::set('auth:tokens:' . $request->token, $request->user['email']);
         Redis::expire('auth:tokens:' . $request->token, 3600);
 
@@ -115,11 +113,8 @@ class AuthController extends Controller
         }
 
         // Retrieve user data from Redis using the user key
-        $user = Redis::hgetall($userKey);
+        $user = Redis::hgetall("user:" . $userKey);
 
-        return response()->json([
-            'id' => $user['id'],
-            'email' => $user['email'],
-        ], 200);
+        return response()->json($user, 200);
     }
 }
