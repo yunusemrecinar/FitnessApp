@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import FlatButton from "../components/ui/FlatButton";
-import { updatePassword } from '../util/http';
+import FlatButton from "../../components/ui/FlatButton";
+import { updatePassword } from '../../util/http';
 
 function ForgotPasswordResetScreen({ route, navigation }) {
     const { email } = route.params;

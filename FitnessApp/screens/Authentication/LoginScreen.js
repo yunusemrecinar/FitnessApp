@@ -4,12 +4,12 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { useContext, useEffect, useState } from "react";
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import appleIcon from '../assets/icons/apple-icon';
-import FlatButton from '../components/ui/FlatButton';
-import IconShare from '../components/ui/Icon';
-import Logo from "../components/ui/Logo";
-import { AuthContext } from '../store/auth-context';
-import { getUserProfile, googleLoginRegister, login } from "../util/http";
+import appleIcon from '../../assets/icons/apple-icon';
+import FlatButton from '../../components/ui/FlatButton';
+import IconShare from '../../components/ui/Icon';
+import Logo from "../../components/ui/Logo";
+import { AuthContext } from '../../store/auth-context';
+import { getUserProfile, googleLoginRegister, login } from "../../util/http";
 
 const androidClientId = '733094219236-3jtjnt0g94s48l58mlt252q6il7kph68.apps.googleusercontent.com';
 const iosClientId = '733094219236-3ug4c0ue4glrh1gjap95qisa8mc74sn5.apps.googleusercontent.com';
@@ -132,7 +132,7 @@ const LoginScreen = ({ navigation }) => {
                     <Pressable onPress={() => promptAsync()} style={({ pressed }) => [pressed && styles.pressed]}>
                         <View style={styles.googleCircle}>
                             <View style={styles.googleIcon}>
-                                <Image style={styles.image} source={require('../assets/images/google-logo.png')} />
+                                <Image style={styles.image} source={require('../../assets/images/google-logo.png')} />
                             </View>
                         </View>
                     </Pressable>

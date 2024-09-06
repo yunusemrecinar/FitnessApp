@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import FlatButton from "../components/ui/FlatButton";
+import FlatButton from "../../components/ui/FlatButton";
 
 function ForgotPasswordLandingScreen({ navigation }) {
     const [email, setEmail] = useState('');

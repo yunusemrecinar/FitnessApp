@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import FlatButton from "../components/ui/FlatButton";
-import SixDigitInput from "../components/ui/SixDigitInput";
+import FlatButton from "../../components/ui/FlatButton";
+import SixDigitInput from "../../components/ui/SixDigitInput";
 
 function ForgotPasswordCodeScreen({ route, navigation }) {
     const { email, emailCode } = route.params;
