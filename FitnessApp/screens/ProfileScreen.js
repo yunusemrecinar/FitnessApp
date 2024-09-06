@@ -10,14 +10,15 @@ const ProfileScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                setTimeout(async () => {
+                // setTimeout(async () => {
                     const userData = await getUser();
                     setUser(userData);
-                }, 1000)
+                // }, 500)
             } catch (error) {
                 Alert.alert('Error', error.message || 'Failed to load user data');
             }
         };
+
         fetchUserData();
     }, []);
 
@@ -32,7 +33,6 @@ const ProfileScreen = ({ navigation }) => {
         }
     };
 
-    console.log(user);
     return (
         <View style={{ padding: 20 }}>
             {user ? (

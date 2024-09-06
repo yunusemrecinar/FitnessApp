@@ -1,12 +1,12 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 
-function Logo() {
+function Logo({ style }) {
     return (
         <View style={styles.outerContainer}>
             <View style={styles.imageContainer}>
                 <Image style={styles.image} source={require('../../assets/images/gorilla.png')} />
             </View>
-            <Text style={styles.text}>Stalwart</Text>
+            <Text style={[styles.text, style]}>Stalwart</Text>
         </View>
     );
 }

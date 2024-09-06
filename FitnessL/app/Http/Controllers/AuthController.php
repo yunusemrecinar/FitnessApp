@@ -87,6 +87,20 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function updatePassword(Request $request)
+    {
+        $userKey = 'user:' . $request->email;
+        $user = Redis::hgetall($userKey);
+
+        $hashedPassword = Hash::make($request->password);
+
+        Redis::hmset($userKey, 'password', $hashedPassword);
+
+        return response()->json([
+            'message' => 'Password updated successfully'
+        ], 201);
+    }
+
     public function logout(Request $request) 
     {
         $token = $request->header('Authorization');

@@ -4,7 +4,9 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { useContext, useEffect, useState } from "react";
 import { Alert, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import appleIcon from '../assets/icons/apple-icon';
 import FlatButton from '../components/ui/FlatButton';
+import IconShare from '../components/ui/Icon';
 import Logo from "../components/ui/Logo";
 import { AuthContext } from '../store/auth-context';
 import { getUserProfile, googleLoginRegister, login } from "../util/http";
@@ -84,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.container}>
-                <Logo />
+                <Logo style={{ color: '#E3E3E3' }} />
                 <View style={styles.inputForm}>
                     <Text style={styles.label}>Email</Text>
                     <TextInput 
@@ -110,13 +112,15 @@ const LoginScreen = ({ navigation }) => {
                             <Ionicons
                                 name={showPassword ? 'eye-outline' : 'eye-off-outline'}
                                 size={24}
-                                color="gray"
+                                color="white"
                             />
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.forgotPassword}>
-                    <Text style={[styles.fontRegular, styles.forgotPasswordText]}>Forgot password?</Text>
+                    <Pressable onPress={() => navigation.navigate('ForgotPasswordLanding')} style={({ pressed }) => [pressed && styles.pressed]}>
+                        <Text style={[styles.fontRegular, styles.forgotPasswordText]}>Forgot password?</Text>
+                    </Pressable>
                 </View>
                 <FlatButton onPress={handleLogin} >Sign in</FlatButton>
                 <View style={styles.dividerContainer}>
@@ -135,7 +139,8 @@ const LoginScreen = ({ navigation }) => {
                     <Pressable onPress={() => handleSignInApple()} style={({ pressed }) => [pressed && styles.pressed]}>
                         <View style={styles.appleCircle}>
                             <View style={styles.appleIcon}>
-                                <Image style={styles.image} source={require('../assets/images/apple-logo.png')} />
+                                <IconShare xmlData={appleIcon} />
+                                {/* <Image style={styles.image} source={require('../assets/images/apple-logo.png')} /> */}
                             </View>
                         </View>
                     </Pressable>
@@ -145,7 +150,7 @@ const LoginScreen = ({ navigation }) => {
                 <View style={styles.switchRegisterWrapper}>
                     <Text style={[styles.fontRegular, styles.switchText]}>Don't have an account?</Text>
                     <Pressable onPress={() => navigation.navigate('Register')} >
-                        <Text style={[styles.switchButton, styles.fontBold, styles.switchText]}>Sign Up</Text>
+                        <Text style={[styles.switchText, styles.switchButton, styles.fontBold]}>Sign Up</Text>
                     </Pressable>
                 </View>
             </View>
@@ -160,7 +165,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#141414',
     },
     fontBold: {
         fontFamily: 'baloo-bold'
@@ -183,6 +188,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontFamily: 'baloo-regular',
+        color: '#FFFFFF',
         fontSize: 16
     },
     input: {
@@ -193,9 +199,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontFamily: 'baloo-regular',
         fontSize: 16,
-        borderWidth: 1, 
         borderRadius: 8,
-        borderColor: '#D4D4D4'
+        backgroundColor: '#D4D4D433',
+        color: '#FFFFFF'
     },
     passwordContainer: {
         flexDirection: 'row',
@@ -243,9 +249,9 @@ const styles = StyleSheet.create({
         gap: 30
     },
     googleCircle: {
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#D4D4D433',
         padding: 18,
-        borderRadius: 30,
+        borderRadius: 35,
         // Shadow properties for iOS
         shadowColor: '#0000000',
         shadowOffset: { width: 2, height: 4 },
@@ -255,9 +261,9 @@ const styles = StyleSheet.create({
         elevation: 10,
     },
     appleCircle: {
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#D4D4D433',
         padding: 18,
-        borderRadius: 30,
+        borderRadius: 35,
         paddingTop: 16,
         // Shadow properties for iOS
         shadowColor: '#0000000',
@@ -273,7 +279,7 @@ const styles = StyleSheet.create({
     },
     appleIcon: {
         width: 30,
-        height: 30
+        height: 30,
     },
     image: {
         height: '100%',
@@ -291,9 +297,10 @@ const styles = StyleSheet.create({
     },
     switchButton: {
         paddingLeft: 4,
-        color: '#29D165'
+        color: '#67F2D1'
     },
     switchText: {
+        color: '#FFFFFF',
         fontSize: 16
     }
 });

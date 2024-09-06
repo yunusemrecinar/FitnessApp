@@ -18,7 +18,7 @@ export default FlatButton;
 const styles = StyleSheet.create({
     button: {
         paddingVertical: 14,
-        backgroundColor: '#29D165',
+        backgroundColor: '#67F2D1',
         borderRadius: 8,
         // iOS Shadow
         shadowColor: '#000',  // Shadow color
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontFamily: 'baloo-semiBold',
-        color: '#FFFFFF',
+        color: '#222222',
         fontSize: 18,
         textAlign: 'center',
     },

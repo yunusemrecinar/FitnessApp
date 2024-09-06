@@ -76,7 +76,7 @@ const RegisterScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.container}>
-                <Logo />
+                <Logo style={{ color: '#E3E3E3' }} />
                 <View style={styles.inputForm}>
                     <Text style={styles.label}>Email</Text>
                     <TextInput
@@ -102,7 +102,7 @@ const RegisterScreen = ({ navigation }) => {
                             <Ionicons
                                 name={showPassword ? 'eye-outline' : 'eye-off-outline'}
                                 size={24}
-                                color="gray"
+                                color="white"
                             />
                         </TouchableOpacity>
                     </View>
@@ -132,14 +132,14 @@ const RegisterScreen = ({ navigation }) => {
                     </Pressable>
                 </View>
                 <View style={styles.privacyPolicy}>
-                    <Text style={styles.privacyPolicyText}>By creating an account, I agree to Stalwart's <Text style={{ textDecorationLine: 'underline' }}>Terms of Service</Text> & <Text style={{ textDecorationLine: 'underline' }}>Privacy Policy.</Text></Text>
+                    <Text style={styles.privacyPolicyText}>By creating an account, I agree to Stalwart's <Text style={{ textDecorationLine: 'underline', color: '#67F2D1' }}>Terms of Service</Text> & <Text style={{ textDecorationLine: 'underline', color: '#67F2D1' }}>Privacy Policy.</Text></Text>
                 </View>
             </View>
             <View style={styles.switchRegister}>
                 <View style={styles.switchRegisterWrapper}>
                     <Text style={[styles.fontRegular, styles.switchText]}>Already have an account?</Text>
                     <Pressable onPress={() => navigation.navigate('Login')} >
-                        <Text style={[styles.switchButton, styles.fontBold, styles.switchText]}>Sign in</Text>
+                        <Text style={[styles.switchText, styles.switchButton, styles.fontBold]}>Sign in</Text>
                     </Pressable>
                 </View>
             </View>
@@ -154,7 +154,7 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#141414',
     },
     fontBold: {
         fontFamily: 'baloo-bold'
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontFamily: 'baloo-regular',
+        color: '#FFFFFF',
         fontSize: 16
     },
     input: {
@@ -188,9 +189,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontFamily: 'baloo-regular',
         fontSize: 16,
-        borderWidth: 1,
         borderRadius: 8,
-        borderColor: '#D4D4D4'
+        backgroundColor: '#D4D4D433',
+        color: '#FFFFFF',
     },
     passwordContainer: {
         flexDirection: 'row',
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#D4D4D433',
         padding: 15,
         borderRadius: 8,
         // Shadow properties for iOS
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FEFEFE',
+        backgroundColor: '#D4D4D433',
         padding: 15,
         borderRadius: 8,
         // Shadow properties for iOS
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
     },
     authText: {
         fontFamily: 'baloo-regular',
+        color: '#FFFFFF',
         fontSize: 18,
         marginLeft: 21,
     },
@@ -294,9 +296,10 @@ const styles = StyleSheet.create({
     },
     switchButton: {
         paddingLeft: 4,
-        color: '#29D165'
+        color: '#67F2D1'
     }, 
     switchText: {
+        color: "#FFFFFF",
         fontSize: 16
     }
 });

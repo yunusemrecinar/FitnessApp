@@ -5,7 +5,7 @@ import Logo from './Logo';
 const CustomSplashScreen = () => {
     return (
         <View style={styles.container}>
-            <Logo />
+            <Logo style={{ color: '#2D2E30'}} />
         </View>
     );
 };
@@ -17,6 +17,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#29D165',
+        backgroundColor: '#67F2D1',
     }
 })

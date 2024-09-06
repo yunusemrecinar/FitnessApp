@@ -15,6 +15,9 @@ import workoutsPressed from './assets/icons/workouts-pressed.js';
 import Workouts from './assets/icons/workouts.js';
 import CustomSplashScreen from './components/ui/CustomSplashScreen';
 import IconShare from './components/ui/Icon';
+import ForgotPasswordCodeScreen from './screens/ForgotPasswordCodeScreen.js';
+import ForgotPasswordLandingScreen from './screens/ForgotPasswordLandingScreen.js';
+import ForgotPasswordResetScreen from './screens/ForgotPasswordResetScreen.js';
 import HistoryScreen from './screens/HistoryScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -33,6 +36,9 @@ function AuthStack() {
     }}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="ForgotPasswordLanding" component={ForgotPasswordLandingScreen} />
+      <Stack.Screen name="ForgotPasswordCode" component={ForgotPasswordCodeScreen} />
+      <Stack.Screen name="ForgotPasswordReset" component={ForgotPasswordResetScreen} />
     </Stack.Navigator>
   );
 }

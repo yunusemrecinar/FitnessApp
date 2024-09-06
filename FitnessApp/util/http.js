@@ -68,6 +68,22 @@ export const logout = async () => {
     }
 };
 
+// UPDATE PASSWORD
+export const updatePassword = async (email, password) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/updatePassword`,
+            {
+                email,
+                password,
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 // USER
 export const getUser = async () => {
     const token = await AsyncStorage.getItem('token');
