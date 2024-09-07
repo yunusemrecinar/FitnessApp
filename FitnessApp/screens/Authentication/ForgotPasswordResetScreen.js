@@ -21,7 +21,7 @@ function ForgotPasswordResetScreen({ route, navigation }) {
             // Call the reset password API
             await updatePassword(email, passwordFirst);
             Alert.alert('Success', 'Password updated successfully');
-            navigation.navigate('Login');
+            navigation.replace('Login');
         } catch (error) {
             Alert.alert('Error', error.message || 'Failed to reset password');
             return;

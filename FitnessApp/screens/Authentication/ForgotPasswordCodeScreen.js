@@ -11,7 +11,7 @@ function ForgotPasswordCodeScreen({ route, navigation }) {
 
     function handleVerify() {
         if (code === emailCode.toString()) {
-            navigation.navigate('ForgotPasswordReset', { email });
+            navigation.replace('ForgotPasswordReset', { email });
         }
     }
 

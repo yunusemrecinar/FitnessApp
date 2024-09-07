@@ -7,7 +7,7 @@ function ForgotPasswordLandingScreen({ navigation }) {
 
     function handleSendEmail() {
         const randomCode = Math.floor(100000 + Math.random() * 900000);
-        navigation.navigate("ForgotPasswordCode", { email: email, emailCode: randomCode.toString() });
+        navigation.replace("ForgotPasswordCode", { email: email, emailCode: randomCode.toString() });
     }
 
     return (
@@ -32,7 +32,7 @@ function ForgotPasswordLandingScreen({ navigation }) {
             </View>
             <View style={styles.switchRegisterWrapper}>
                 <Text style={[styles.fontRegular, styles.switchText]}>Already have an account?</Text>
-                <Pressable onPress={() => navigation.navigate('Login')} >
+                <Pressable onPress={() => navigation.replace('Login')} >
                     <Text style={[styles.switchText, styles.switchButton, styles.fontBold]}>Sign in</Text>
                 </Pressable>
             </View>

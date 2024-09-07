@@ -19,8 +19,10 @@ import HistoryScreen from './screens/App/MainApp/HistoryScreen';
 import HomeScreen from './screens/App/MainApp/HomeScreen';
 import ProfileScreen from './screens/App/MainApp/ProfileScreen';
 import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
+import TargetAreaScreen from './screens/App/OnBoarding/TargetAreaSceen.js';
 import WelcomeScreen from './screens/App/OnBoarding/WelcomeScreen.js';
 import WorkoutPlanScreen from './screens/App/OnBoarding/WorkoutPlanScreen.js';
+import WorkoutScheduleScreen from './screens/App/OnBoarding/WorkoutScheduleScreen.js';
 import ForgotPasswordCodeScreen from './screens/Authentication/ForgotPasswordCodeScreen.js';
 import ForgotPasswordLandingScreen from './screens/Authentication/ForgotPasswordLandingScreen.js';
 import ForgotPasswordResetScreen from './screens/Authentication/ForgotPasswordResetScreen.js';
@@ -52,6 +54,8 @@ function OnBoarding() {
     }}>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
+      <Stack.Screen name="WorkoutSchedule" component={WorkoutScheduleScreen} />
+      <Stack.Screen name="TargetArea" component={TargetAreaScreen} />
     </Stack.Navigator>
   );
 }

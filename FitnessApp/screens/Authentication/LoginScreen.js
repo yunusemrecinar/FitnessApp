@@ -39,7 +39,7 @@ const LoginScreen = ({ navigation }) => {
                     await googleLoginRegister(token, user);
                     Alert.alert('Success', 'Logged in successfully');
                     authCtx.authenticate(token);
-                    navigation.navigate('AuthenticatedStack');
+                    navigation.replace('AuthenticatedStack');
                 } catch (error) {
                     return error;
                 }
@@ -80,11 +80,11 @@ const LoginScreen = ({ navigation }) => {
             authCtx.authenticate(response.token);
             /* Navigating Logged In User Begin */
             if (response.user.is_first_time === 'true') {
-                navigation.navigate('OnBoarding', {
+                navigation.replace('OnBoarding', {
                     screen: 'Welcome',
                 });
             } else {
-                navigation.navigate('AuthenticatedStack', {
+                navigation.replace('AuthenticatedStack', {
                     screen: 'Profile',
                     // params: {
                     //     screen: 'Home'
@@ -132,7 +132,7 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.forgotPassword}>
-                    <Pressable onPress={() => navigation.navigate('ForgotPasswordLanding')} style={({ pressed }) => [pressed && styles.pressed]}>
+                    <Pressable onPress={() => navigation.replace('ForgotPasswordLanding')} style={({ pressed }) => [pressed && styles.pressed]}>
                         <Text style={[styles.fontRegular, styles.forgotPasswordText]}>Forgot password?</Text>
                     </Pressable>
                 </View>
@@ -163,7 +163,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.switchRegister}>
                 <View style={styles.switchRegisterWrapper}>
                     <Text style={[styles.fontRegular, styles.switchText]}>Don't have an account?</Text>
-                    <Pressable onPress={() => navigation.navigate('Register')} >
+                    <Pressable onPress={() => navigation.replace('Register')} >
                         <Text style={[styles.switchText, styles.switchButton, styles.fontBold]}>Sign Up</Text>
                     </Pressable>
                 </View>

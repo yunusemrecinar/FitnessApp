@@ -35,7 +35,7 @@ const WelcomeScreen = ({ navigation }) => {
                 </MaskedView>
                 <TouchableOpacity 
                     style={styles.startButton} 
-                    onPress={() => navigation.navigate('WorkoutPlan')}
+                    onPress={() => navigation.replace('WorkoutPlan')}
                 >
                     <Text style={styles.buttonText}>Start</Text>
                     <AntDesign name="arrowright" size={24} color="black" />

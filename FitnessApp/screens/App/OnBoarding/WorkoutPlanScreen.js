@@ -23,6 +23,14 @@ const WorkoutCard = ({ title, description, icon, isSelected, onPress }) => {
 const WorkoutPlanScreen = ({ navigation }) => {
     const [selectedCard, setSelectedCard] = useState('Weekly');
 
+    const handleNext = () => {
+        if (selectedCard === 'Weekly') {
+            navigation.replace('WorkoutSchedule', {
+                pickedDays: ['Thursday', 'Saturday', 'Sunday']
+            });
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.progressBarContainer}>
@@ -50,10 +58,16 @@ const WorkoutPlanScreen = ({ navigation }) => {
                 />
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.button, styles.backButton]}>
+                <TouchableOpacity 
+                    style={[styles.button, styles.backButton]}
+                    onPress={() => navigation.replace('Welcome')}    
+                    >
                     <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.nextButton]}>
+                <TouchableOpacity 
+                    style={[styles.button, styles.nextButton]}
+                    onPress={handleNext}    
+                >
                     <Text style={styles.nextText}>Next</Text>
                 </TouchableOpacity>
             </View>

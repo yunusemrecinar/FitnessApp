@@ -67,7 +67,7 @@ const RegisterScreen = ({ navigation }) => {
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
             authCtx.authenticate(response);
-            navigation.navigate('AuthenticatedStack');
+            navigation.replace('AuthenticatedStack');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
@@ -138,7 +138,7 @@ const RegisterScreen = ({ navigation }) => {
             <View style={styles.switchRegister}>
                 <View style={styles.switchRegisterWrapper}>
                     <Text style={[styles.fontRegular, styles.switchText]}>Already have an account?</Text>
-                    <Pressable onPress={() => navigation.navigate('Login')} >
+                    <Pressable onPress={() => navigation.replace('Login')} >
                         <Text style={[styles.switchText, styles.switchButton, styles.fontBold]}>Sign in</Text>
                     </Pressable>
                 </View>
