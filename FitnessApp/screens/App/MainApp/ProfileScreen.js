@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Text, View } from "react-native";
-import { AuthContext } from "../../store/auth-context";
-import { getUser, logout } from "../../util/http";
+import { AuthContext } from "../../../store/auth-context";
+import { getUser, logout } from "../../../util/http";
 
 const ProfileScreen = ({ navigation }) => {
     const authCtx = useContext(AuthContext);

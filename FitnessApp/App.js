@@ -15,10 +15,12 @@ import workoutsPressed from './assets/icons/workouts-pressed.js';
 import Workouts from './assets/icons/workouts.js';
 import CustomSplashScreen from './components/ui/CustomSplashScreen';
 import IconShare from './components/ui/Icon';
-import HistoryScreen from './screens/App/HistoryScreen';
-import HomeScreen from './screens/App/HomeScreen';
-import ProfileScreen from './screens/App/ProfileScreen';
-import WorkoutsScreen from './screens/App/WorkoutsScreen';
+import HistoryScreen from './screens/App/MainApp/HistoryScreen';
+import HomeScreen from './screens/App/MainApp/HomeScreen';
+import ProfileScreen from './screens/App/MainApp/ProfileScreen';
+import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
+import WelcomeScreen from './screens/App/OnBoarding/WelcomeScreen.js';
+import WorkoutPlanScreen from './screens/App/OnBoarding/WorkoutPlanScreen.js';
 import ForgotPasswordCodeScreen from './screens/Authentication/ForgotPasswordCodeScreen.js';
 import ForgotPasswordLandingScreen from './screens/Authentication/ForgotPasswordLandingScreen.js';
 import ForgotPasswordResetScreen from './screens/Authentication/ForgotPasswordResetScreen.js';
@@ -39,6 +41,17 @@ function AuthStack() {
       <Stack.Screen name="ForgotPasswordLanding" component={ForgotPasswordLandingScreen} />
       <Stack.Screen name="ForgotPasswordCode" component={ForgotPasswordCodeScreen} />
       <Stack.Screen name="ForgotPasswordReset" component={ForgotPasswordResetScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function OnBoarding() {
+  return (
+    <Stack.Navigator screenOptions={{
+      headerShown: false,
+    }}>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
     </Stack.Navigator>
   );
 }
@@ -197,6 +210,10 @@ function Navigation() {
           name="AuthenticatedStack"
           component={AuthenticatedStack}
         />
+        <Stack.Screen
+          name="OnBoarding"
+          component={OnBoarding}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -211,6 +228,15 @@ const App = () => {
     'baloo-regular': require('./assets/fonts/BalooBhaijaan2-Medium.ttf'),
     'baloo-semiBold': require('./assets/fonts/BalooBhaijaan2-SemiBold.ttf'),
     'baloo-bold': require('./assets/fonts/BalooBhaijaan2-Bold.ttf'),
+    'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
+    'roboto-medium': require('./assets/fonts/Roboto-Medium.ttf'),
+    'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
+    'roboto-condensed-regular': require('./assets/fonts/RobotoCondensed-Regular.ttf'),
+    'roboto-condensed-medium': require('./assets/fonts/RobotoCondensed-Medium.ttf'),
+    'roboto-condensed-semibold': require('./assets/fonts/RobotoCondensed-SemiBold.ttf'),
+    'roboto-condensed-bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
+    'roboto-flex': require('./assets/fonts/RobotoFlex-Regular.ttf'),
+    'caladea-bold': require('./assets/fonts/Caladea-Bold.ttf'),
   });
   const [showSplash, setShowSplash] = useState(true);
 

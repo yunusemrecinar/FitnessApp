@@ -30,10 +30,12 @@ class AuthController extends Controller
             'id' => Str::uuid(),
             'email' => $request->email,
             'password' => $hashedPassword,
+            'is_first_time' => true,
         ]);
 
         return response()->json([
-            'message' => 'User registered successfully'
+            'message' => 'User registered successfully',
+            'user' => Redis::hgetall($userKey)
         ], 201);
     }
 
@@ -49,7 +51,8 @@ class AuthController extends Controller
                 'given_name' => $request->user['given_name'],
                 'name' => $request->user['name'],
                 'picture' => $request->user['picture'],
-                'verified_email' => true
+                'verified_email' => true,
+                'is_first_time' => true,
             ]);
         }
 
@@ -57,7 +60,8 @@ class AuthController extends Controller
         Redis::expire('auth:tokens:' . $request->token, 3600);
 
         return response()->json([
-            'message' => 'Login successful'
+            'message' => 'Login successful',
+            'user' => Redis::hgetall($userKey)
         ], 200);
     }
 
@@ -83,7 +87,8 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'message' => 'Login successful'
+            'message' => 'Login successful',
+            'user' => $user
         ], 200);
     }
 

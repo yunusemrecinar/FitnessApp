@@ -75,9 +75,23 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             const response = await login(email, password);
+            console.log(response);
             Alert.alert('Success', 'Logged in successfully');
-            authCtx.authenticate(response);
-            navigation.navigate('AuthenticatedStack');
+            authCtx.authenticate(response.token);
+            /* Navigating Logged In User Begin */
+            if (response.user.is_first_time === 'true') {
+                navigation.navigate('OnBoarding', {
+                    screen: 'Welcome',
+                });
+            } else {
+                navigation.navigate('AuthenticatedStack', {
+                    screen: 'Profile',
+                    // params: {
+                    //     screen: 'Home'
+                    // }
+                });
+            }
+            /* Navigating Logged In User End */
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
@@ -165,7 +179,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#141414',
+        backgroundColor: '#171717',
     },
     fontBold: {
         fontFamily: 'baloo-bold'

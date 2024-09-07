@@ -23,11 +23,11 @@ export const login = async (email, password) => {
             email,
             password
         });
-        const token = response.data.token;
+        const data = response.data;
 
         // Saving token to the local storage for future requests
-        await AsyncStorage.setItem('token', token);
-        return token;
+        await AsyncStorage.setItem('token', data.token);
+        return data;
     } catch (error) {
         throw error.response.data;
     }

@@ -154,7 +154,7 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#141414',
+        backgroundColor: '#171717',
     },
     fontBold: {
         fontFamily: 'baloo-bold'
