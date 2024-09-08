@@ -20,6 +20,7 @@ import HomeScreen from './screens/App/MainApp/HomeScreen';
 import ProfileScreen from './screens/App/MainApp/ProfileScreen';
 import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
 import TargetAreaScreen from './screens/App/OnBoarding/TargetAreaSceen.js';
+import TargetExercises from './screens/App/OnBoarding/TargetExercises.js';
 import WelcomeScreen from './screens/App/OnBoarding/WelcomeScreen.js';
 import WorkoutPlanScreen from './screens/App/OnBoarding/WorkoutPlanScreen.js';
 import WorkoutScheduleScreen from './screens/App/OnBoarding/WorkoutScheduleScreen.js';
@@ -56,6 +57,7 @@ function OnBoarding() {
       <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
       <Stack.Screen name="WorkoutSchedule" component={WorkoutScheduleScreen} />
       <Stack.Screen name="TargetArea" component={TargetAreaScreen} />
+      <Stack.Screen name="TargetExercises" component={TargetExercises} />
     </Stack.Navigator>
   );
 }

@@ -6,14 +6,12 @@ const stepWidth = screenWidth / 5 - 17;
 
 function TargetAreaScreen({ route, navigation }) {
     const { selectedDays, currentDay, prevDaysData } = route.params;
-    const [selectedArea, setSelectedArea] = useState(['Chest', 'Legs']);
+    const [selectedArea, setSelectedArea] = useState(prevDaysData[selectedDays[currentDay]] || ['Chest', 'Legs']);
     const stepPercentage = ((currentDay + 1) / selectedDays.length) * 100;
-    console.log(stepPercentage, "percentage");
 
     const areas = ['Arms', 'Chest', 'Belly', 'Buff', 'ABC', 'Legs'];
 
     const toggleArea = (area) => {
-        console.log(selectedDays, currentDay, prevDaysData);
         if (selectedArea.includes(area)) {
             setSelectedArea(selectedArea.filter(selectedArea => selectedArea !== area));
         } else {
@@ -21,11 +19,35 @@ function TargetAreaScreen({ route, navigation }) {
         }
     };
 
+    const handleBack = () => {
+        if (currentDay === 0) {
+            navigation.replace('WorkoutSchedule', { pickedDays: selectedDays });
+            return;
+        }
+
+        navigation.replace('TargetArea', {
+            selectedDays: selectedDays,
+            currentDay: currentDay - 1,
+            prevDaysData: prevDaysData
+        });
+    }
+
     const handleNext = () => {
         if (currentDay === selectedDays.length - 1) {
-            navigation.replace('Home', {
+            navigation.replace('TargetExercises', {
                 selectedDays: selectedDays,
-                prevDaysData: prevDaysData,
+                currentDay: 0,
+                daysWithTargetArea: {
+                    ...prevDaysData,
+                    [selectedDays[currentDay]]: selectedArea,
+                },
+                daysWithTargetExercises: {
+                    [selectedDays[0]]: [
+                        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
+                        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
+                        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
+                    ],
+                }
             });
             return;
         }
@@ -75,7 +97,7 @@ function TargetAreaScreen({ route, navigation }) {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={[styles.button, styles.backButton]}
-                    onPress={() => navigation.replace('WorkoutSchedule', { pickedDays: selectedDays })}
+                    onPress={handleBack}
                 >
                     <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
