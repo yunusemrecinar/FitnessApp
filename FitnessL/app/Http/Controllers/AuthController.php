@@ -106,6 +106,30 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function completeOnBoarding(Request $request)
+    {
+        // Get user key from token
+        $token = $request->header('Authorization');
+        $userKey = Redis::get('auth:tokens:' . $token);
+
+        if (!$userKey) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+
+        // Update user data in Redis
+        // selectedDays, daysWithTargetArea, daysWithTargetExercises
+        Redis::hmset($userKey, [
+            'is_first_time' => "false",
+            'selectedDays' => $request->selectedDays,
+            'daysWithTargetArea' => $request->daysWithTargetArea,
+            'daysWithTargetExercises' => $request->daysWithTargetExercises
+        ]);
+
+        return response()->json([
+            'message' => 'Onboarding completed successfully'
+        ], 201);
+    }
+
     public function logout(Request $request) 
     {
         $token = $request->header('Authorization');

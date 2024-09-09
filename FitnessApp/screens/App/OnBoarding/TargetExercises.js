@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useContext, useState } from "react";
+import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { ScrollView } from "react-native-gesture-handler";
 import addCircle from "../../../assets/icons/add-circle";
 import IconShare from "../../../components/ui/Icon";
+import { AuthContext } from "../../../store/auth-context";
+import { completeOnboarding } from "../../../util/http";
 
 const { width: screenWidth } = Dimensions.get('window');
 const stepWidth = screenWidth / 5 - 17;
@@ -108,6 +110,7 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
 }
 
 function TargetExercises({ route, navigation }) {
+    const authCtx = useContext(AuthContext);
     const { selectedDays, currentDay, daysWithTargetArea, daysWithTargetExercises } = route.params;
     const stepPercentage = ((currentDay + 1) / selectedDays.length) * 100;
     const defaultTargetExercises = [
@@ -136,19 +139,22 @@ function TargetExercises({ route, navigation }) {
         });
     }
 
-    const handleNext = () => {
+    const handleNext = async () => {
+        const token = authCtx.token;
         if (currentDay === selectedDays.length - 1) {
-            navigation.replace('AuthenticatedStack', {
-                screen: 'Home',
-                params: {
-                    selectedDays: selectedDays,
-                    daysWithTargetArea: daysWithTargetArea,
-                    daysWithTargetExercises: {
-                        ...daysWithTargetExercises,
-                        [selectedDays[currentDay]]: exercises,
-                    }
-                }
-            });
+            try {
+                const selectedDaysJ = JSON.stringify(selectedDays);
+                const daysWithTargetAreaJ = JSON.stringify(daysWithTargetArea);
+                const daysWithTargetExercisesJ = JSON.stringify(daysWithTargetExercises);
+                
+                await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ);
+                authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ }));
+                navigation.replace('AuthenticatedStack', {
+                    screen: 'Home',
+                });
+            } catch (error) {
+                Alert.alert('Error', error.message || 'Something went wrong');
+            }
             return;
         }
 

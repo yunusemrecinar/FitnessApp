@@ -84,6 +84,29 @@ export const updatePassword = async (email, password) => {
     }
 };
 
+// COMPLETE ONBOARDING
+export const completeOnboarding = async (token, selectedDays, daysWithTargetArea, daysWithTargetExercises) => {
+    try {
+        const response = await axios.post(`${API_URL}/completeOnBoarding`, 
+            {
+                selectedDays: selectedDays,
+                daysWithTargetArea: daysWithTargetArea,
+                daysWithTargetExercises: daysWithTargetExercises
+            },
+            {
+                headers: {
+                    Authorization: token,
+                },
+            }
+        );
+        const data = response.data;
+        
+        return data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 // USER
 export const getUser = async () => {
     const token = await AsyncStorage.getItem('token');

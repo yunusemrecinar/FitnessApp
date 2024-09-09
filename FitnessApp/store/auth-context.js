@@ -4,13 +4,16 @@ import { createContext, useState } from 'react';
 
 export const AuthContext = createContext({
     token: '',
+    allWorkoutPlan: '',
     isAuthenticated: false,
     authenticate: () => {},
+    setAllPlan: () => {},
     logout: () => {},
 })
 
 function AuthContextProvider({ children }) {
     const [authToken, setAuthToken] = useState();
+    const [allWorkoutPlan, setAllWorkoutPlan] = useState();
 
     function authenticate(token) {
         setAuthToken(token);
@@ -22,10 +25,17 @@ function AuthContextProvider({ children }) {
         AsyncStorage.removeItem('token');
     }
 
+    function setAllPlan(allPlan) {
+        setAllWorkoutPlan(allPlan);
+        AsyncStorage.setItem('AllWorkoutPlan', allPlan);
+    }
+
     const value = {
         token: authToken,
+        allWorkoutPlan: allWorkoutPlan,
         isAuthenticated: !!authToken,
         authenticate: authenticate,
+        setAllPlan: setAllPlan,
         logout: logout
     };
 
