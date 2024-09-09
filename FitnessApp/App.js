@@ -50,9 +50,7 @@ function AuthStack() {
 
 function OnBoarding() {
   return (
-    <Stack.Navigator screenOptions={{
-      headerShown: false,
-    }}>
+    <Stack.Navigator>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
       <Stack.Screen name="WorkoutSchedule" component={WorkoutScheduleScreen} />
@@ -66,9 +64,13 @@ function AuthenticatedStack() {
   return (
     <BottomTabs.Navigator
       screenOptions={{
+        headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#29D165',
-        tabBarInactiveTintColor: '#9DB2CE'
+        tabBarStyle: {
+          backgroundColor: '#222222',
+          borderTopWidth: 1,
+          borderTopColor: '#393939',
+        },
       }}
     >
       <BottomTabs.Screen 
@@ -85,7 +87,7 @@ function AuthenticatedStack() {
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#29D165',
+                      backgroundColor: '#67F2D1',
                       position: 'absolute',
                       bottom: -16,  // Adjust the position as needed
                     }}
@@ -110,7 +112,7 @@ function AuthenticatedStack() {
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#29D165',
+                      backgroundColor: '#67F2D1',
                       position: 'absolute',
                       bottom: -16,  // Adjust the position as needed
                     }}
@@ -135,7 +137,7 @@ function AuthenticatedStack() {
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#29D165',
+                      backgroundColor: '#67F2D1',
                       position: 'absolute',
                       bottom: -16,  // Adjust the position as needed
                     }}
@@ -160,7 +162,7 @@ function AuthenticatedStack() {
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#29D165',
+                      backgroundColor: '#67F2D1',
                       position: 'absolute',
                       bottom: -16,  // Adjust the position as needed
                     }}
@@ -182,7 +184,6 @@ function Navigation() {
   
   useEffect(() => {
     async function fetchToken() {
-      AsyncStorage.clear();
       const storedToken = await AsyncStorage.getItem('token');
 
       if (storedToken) {
@@ -216,10 +217,12 @@ function Navigation() {
         <Stack.Screen
           name="AuthenticatedStack"
           component={AuthenticatedStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="OnBoarding"
           component={OnBoarding}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

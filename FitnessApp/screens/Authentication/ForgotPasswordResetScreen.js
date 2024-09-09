@@ -41,7 +41,7 @@ function ForgotPasswordResetScreen({ route, navigation }) {
                     secureTextEntry={!showPasswordFirst}
                     onChangeText={text => setPasswordFirst(text)}
                     value={passwordFirst}
-                    selectionColor="#29D165"
+                    selectionColor="#67F2D1"
                 />
                 <TouchableOpacity
                     style={styles.icon}
@@ -61,7 +61,7 @@ function ForgotPasswordResetScreen({ route, navigation }) {
                     secureTextEntry={!showPasswordSecond}
                     onChangeText={text => setPasswordSecond(text)}
                     value={passwordSecond}
-                    selectionColor="#29D165"
+                    selectionColor="#67F2D1"
                 />
                 <TouchableOpacity
                     style={styles.icon}

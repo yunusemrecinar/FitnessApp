@@ -75,8 +75,8 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             const response = await login(email, password);
-            console.log(response);
             Alert.alert('Success', 'Logged in successfully');
+            authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises }));
             authCtx.authenticate(response.token);
             /* Navigating Logged In User Begin */
             if (response.user.is_first_time === 'true') {
@@ -85,13 +85,9 @@ const LoginScreen = ({ navigation }) => {
                 });
             } else {
                 navigation.replace('AuthenticatedStack', {
-                    screen: 'Profile',
-                    // params: {
-                    //     screen: 'Home'
-                    // }
+                    screen: 'Home',
                 });
             }
-            /* Navigating Logged In User End */
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
@@ -108,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
                         onChangeText={setEmail} 
                         style={styles.input}
                         autoCapitalize="none"
-                        selectionColor="#29D165"
+                        selectionColor="#67F2D1"
                     />
                     <Text style={styles.label}>Password</Text>
                     <View style={styles.passwordContainer}>
@@ -117,7 +113,7 @@ const LoginScreen = ({ navigation }) => {
                             secureTextEntry={!showPassword}
                             onChangeText={text => setPassword(text)}
                             value={password}
-                            selectionColor="#29D165"
+                            selectionColor="#67F2D1"
                         />
                         <TouchableOpacity
                             style={styles.icon}
@@ -236,9 +232,6 @@ const styles = StyleSheet.create({
         fontFamily: 'baloo-regular',
         fontSize: 16,
         color: '#B4B4B4'
-    },
-    signIn: {
-        backgroundColor: '#29D165',
     },
     dividerContainer: {
         flexDirection: 'row',

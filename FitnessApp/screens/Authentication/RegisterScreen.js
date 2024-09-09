@@ -84,7 +84,7 @@ const RegisterScreen = ({ navigation }) => {
                         onChangeText={setEmail}
                         style={styles.input}
                         autoCapitalize="none"
-                        selectionColor="#29D165"
+                        selectionColor="#67F2D1"
                     />
                     <Text style={styles.label}>Password</Text>
                     <View style={styles.passwordContainer}>
@@ -93,7 +93,7 @@ const RegisterScreen = ({ navigation }) => {
                             secureTextEntry={!showPassword}
                             onChangeText={text => setPassword(text)}
                             value={password}
-                            selectionColor="#29D165"
+                            selectionColor="#67F2D1"
                         />
                         <TouchableOpacity
                             style={styles.icon}
@@ -202,9 +202,6 @@ const styles = StyleSheet.create({
         paddingRight: 0,
         position: 'absolute',
         right: 15
-    },
-    signIn: {
-        backgroundColor: '#29D165',
     },
     dividerContainer: {
         flexDirection: 'row',

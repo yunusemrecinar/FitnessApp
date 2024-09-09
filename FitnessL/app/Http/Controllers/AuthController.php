@@ -88,7 +88,14 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'message' => 'Login successful',
-            'user' => $user
+            'user' => [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'is_first_time' => $user['is_first_time'],
+                'selectedDays' => $user['selectedDays'],
+                'daysWithTargetArea' => $user['daysWithTargetArea'],
+                'daysWithTargetExercises' => $user['daysWithTargetExercises']
+            ]
         ], 200);
     }
 

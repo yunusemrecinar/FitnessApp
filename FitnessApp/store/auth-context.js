@@ -8,6 +8,7 @@ export const AuthContext = createContext({
     isAuthenticated: false,
     authenticate: () => {},
     setAllPlan: () => {},
+    fetchWorkoutPlan: () => {},
     logout: () => {},
 })
 
@@ -30,12 +31,21 @@ function AuthContextProvider({ children }) {
         AsyncStorage.setItem('AllWorkoutPlan', allPlan);
     }
 
+    function fetchWorkoutPlan() {
+        if (!allWorkoutPlan) {
+            AsyncStorage.getItem('AllWorkoutPlan').then((plan) => {
+                setAllWorkoutPlan(plan);
+            });
+        }
+    }
+
     const value = {
         token: authToken,
         allWorkoutPlan: allWorkoutPlan,
         isAuthenticated: !!authToken,
         authenticate: authenticate,
         setAllPlan: setAllPlan,
+        fetchWorkoutPlan: fetchWorkoutPlan,
         logout: logout
     };
 
