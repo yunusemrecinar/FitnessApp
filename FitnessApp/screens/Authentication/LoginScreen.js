@@ -76,14 +76,15 @@ const LoginScreen = ({ navigation }) => {
         try {
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
-            authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises }));
             authCtx.authenticate(response.token);
+
             /* Navigating Logged In User Begin */
             if (response.user.is_first_time === 'true') {
                 navigation.replace('OnBoarding', {
                     screen: 'Welcome',
                 });
             } else {
+                authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises, daysWithNotes: response.user.daysWithNotes }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',
                 });

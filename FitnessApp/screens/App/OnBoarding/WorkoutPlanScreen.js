@@ -26,7 +26,7 @@ const WorkoutPlanScreen = ({ navigation }) => {
     const handleNext = () => {
         if (selectedCard === 'Weekly') {
             navigation.replace('WorkoutSchedule', {
-                pickedDays: ['Thursday', 'Saturday', 'Sunday']
+                pickedDays: ['Tuesday', 'Friday']
             });
         }
     }

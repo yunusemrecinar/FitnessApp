@@ -15,9 +15,11 @@ import workoutsPressed from './assets/icons/workouts-pressed.js';
 import Workouts from './assets/icons/workouts.js';
 import CustomSplashScreen from './components/ui/CustomSplashScreen';
 import IconShare from './components/ui/Icon';
+import AddWorkoutScreen from './screens/App/MainApp/AddWorkoutScreen.js';
 import HistoryScreen from './screens/App/MainApp/HistoryScreen';
 import HomeScreen from './screens/App/MainApp/HomeScreen';
 import ProfileScreen from './screens/App/MainApp/ProfileScreen';
+import WorkoutDetailScreen from './screens/App/MainApp/WorkoutDetailScreen.js';
 import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
 import TargetAreaScreen from './screens/App/OnBoarding/TargetAreaSceen.js';
 import TargetExercises from './screens/App/OnBoarding/TargetExercises.js';
@@ -50,7 +52,9 @@ function AuthStack() {
 
 function OnBoarding() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{
+      headerShown: false,
+    }}>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
       <Stack.Screen name="WorkoutSchedule" component={WorkoutScheduleScreen} />
@@ -60,7 +64,7 @@ function OnBoarding() {
   );
 }
 
-function AuthenticatedStack() {
+function BottomTabsComponent() {
   return (
     <BottomTabs.Navigator
       screenOptions={{
@@ -73,11 +77,11 @@ function AuthenticatedStack() {
         },
       }}
     >
-      <BottomTabs.Screen 
-        name="Home" 
-        component={HomeScreen}  
+      <BottomTabs.Screen
+        name="Home"
+        component={HomeScreen}
         options={{
-          tabBarIcon: ({ size, focused, color}) => {
+          tabBarIcon: ({ size, focused, color }) => {
             return (
               <View style={{ alignItems: 'center' }}>
                 <IconShare color={color} width={size} height={size} xmlData={focused ? homePressed : HomeIcon} />
@@ -123,9 +127,9 @@ function AuthenticatedStack() {
           },
         }}
       />
-      <BottomTabs.Screen 
-        name="History" 
-        component={HistoryScreen} 
+      <BottomTabs.Screen
+        name="History"
+        component={HistoryScreen}
         options={{
           tabBarIcon: ({ size, focused, color }) => {
             return (
@@ -148,9 +152,9 @@ function AuthenticatedStack() {
           }
         }}
       />
-      <BottomTabs.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
+      <BottomTabs.Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ size, focused, color }) => {
             return (
@@ -172,8 +176,39 @@ function AuthenticatedStack() {
             )
           }
         }}
-        />
+      />
     </BottomTabs.Navigator>
+  );
+}
+
+function AuthenticatedStack() {
+  return (
+    <Stack.Navigator 
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="BottomTabs"
+        component={BottomTabsComponent}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WorkoutDetail"
+        component={WorkoutDetailScreen}
+        options={{
+          presentation: 'modal',
+          cardStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+      <Stack.Screen
+        name="AddWorkout"
+        component={AddWorkoutScreen}
+        options={{
+          presentation: 'modal',
+        }}
+      />
+    </Stack.Navigator>
   )
 }
 

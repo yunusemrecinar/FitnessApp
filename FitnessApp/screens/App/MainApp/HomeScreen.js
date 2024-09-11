@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import addCircle from "../../../assets/icons/add-circle";
 import IconShare from "../../../components/ui/Icon";
 import { AuthContext } from "../../../store/auth-context";
@@ -15,6 +15,7 @@ function HomeScreen({ route, navigation }) {
 
     useEffect(() => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
+        // console.log(authCtx.allWorkoutPlan);
     }, [authCtx.allWorkoutPlan]);
 
     return (
@@ -22,7 +23,7 @@ function HomeScreen({ route, navigation }) {
             <View style={styles.header}>
                 <Text style={styles.title}>All workout plans</Text>
                 <TouchableOpacity
-                    // onPress={}
+                    onPress={() => navigation.navigate('AddWorkout')}
                 >
                     <IconShare width={28} height={28} xmlData={addCircle} />
                 </TouchableOpacity>
@@ -30,27 +31,37 @@ function HomeScreen({ route, navigation }) {
             <ScrollView style={styles.workouts}>
                 <View style={styles.workoutsView}>
                     {workoutPlans && JSON.parse(workoutPlans['selectedDays']).map((workoutDay, index) => (
-                        <View>
+                        <View key={index}>
                             <Text style={styles.workoutTitleText}>{workoutDay}</Text>
-                            <View style={styles.workoutCard}>
-                                <View style={[styles.workoutRow, styles.workoutTarget]}>
-                                    <Text style={styles.workoutRowTitle}>Target:</Text>
-                                    {JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
-                                        <Text style={styles.workoutRowText} key={index}>
-                                            {target}{index < array.length - 1 ? ', ' : ''}
+                            <TouchableOpacity 
+                                onPress={() => navigation.navigate('WorkoutDetail', {
+                                    workoutDay: workoutDay,
+                                    workoutPlans: workoutPlans
+                                })}
+                            >
+                                <View style={styles.workoutCard}>
+                                    <View style={[styles.workoutRow, styles.workoutTarget]}>
+                                        <Text style={styles.workoutRowTitle}>Target:</Text>
+                                        {JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
+                                            <Text style={styles.workoutRowText} key={index}>
+                                                {target}{index < array.length - 1 ? ', ' : ''}
+                                            </Text>
+                                        ))}
+                                    </View>
+                                    <View style={[styles.workoutRow, styles.workoutExercises]}>
+                                        <Text style={styles.workoutRowTitle}>Exercises:</Text>
+                                        <Text style={styles.workoutRowText}>
+                                            {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
                                         </Text>
-                                    ))}
+                                    </View>
+                                    <View style={[styles.workoutRow, styles.workoutNote]}>
+                                        <Text style={styles.workoutRowTitle}>Note:</Text>
+                                        <Text style={styles.workoutRowText}>
+                                            {JSON.parse(workoutPlans['daysWithNotes'])[workoutDay]}
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={[styles.workoutRow, styles.workoutExercises]}>
-                                    <Text style={styles.workoutRowTitle}>Exercises:</Text>
-                                    <Text style={styles.workoutRowText}>
-                                        {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
-                                    </Text>
-                                </View>
-                                <View style={[styles.workoutRow, styles.workoutNote]}>
-                                    <Text style={styles.workoutRowTitle}>Note:</Text>
-                                </View>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     ))}
                 </View>
@@ -64,7 +75,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
     workoutRow: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-end',
     },
     container: {
         flex: 1,

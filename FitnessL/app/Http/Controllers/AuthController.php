@@ -88,14 +88,7 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'message' => 'Login successful',
-            'user' => [
-                'id' => $user['id'],
-                'email' => $user['email'],
-                'is_first_time' => $user['is_first_time'],
-                'selectedDays' => $user['selectedDays'],
-                'daysWithTargetArea' => $user['daysWithTargetArea'],
-                'daysWithTargetExercises' => $user['daysWithTargetExercises']
-            ]
+            'user' => $user
         ], 200);
     }
 
@@ -129,7 +122,8 @@ class AuthController extends Controller
             'is_first_time' => "false",
             'selectedDays' => $request->selectedDays,
             'daysWithTargetArea' => $request->daysWithTargetArea,
-            'daysWithTargetExercises' => $request->daysWithTargetExercises
+            'daysWithTargetExercises' => $request->daysWithTargetExercises,
+            'daysWithNotes' => $request->daysWithNotes,
         ]);
 
         return response()->json([

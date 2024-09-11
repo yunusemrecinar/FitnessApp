@@ -85,13 +85,14 @@ export const updatePassword = async (email, password) => {
 };
 
 // COMPLETE ONBOARDING
-export const completeOnboarding = async (token, selectedDays, daysWithTargetArea, daysWithTargetExercises) => {
+export const completeOnboarding = async (token, selectedDays, daysWithTargetArea, daysWithTargetExercises, daysWithNotes) => {
     try {
         const response = await axios.post(`${API_URL}/completeOnBoarding`, 
             {
                 selectedDays: selectedDays,
                 daysWithTargetArea: daysWithTargetArea,
-                daysWithTargetExercises: daysWithTargetExercises
+                daysWithTargetExercises: daysWithTargetExercises,
+                daysWithNotes: daysWithNotes
             },
             {
                 headers: {

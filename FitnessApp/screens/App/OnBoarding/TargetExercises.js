@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import addCircle from "../../../assets/icons/add-circle";
 import IconShare from "../../../components/ui/Icon";
 import { AuthContext } from "../../../store/auth-context";
@@ -87,7 +87,7 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
     return (
         <View>
             <Dropdown
-                style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                style={[styles.dropdown, isFocus && { borderColor: '#67F2D1', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={data}
@@ -103,7 +103,9 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
                     dropdownChange(item.value, index, dKey);
                 }}
                 containerStyle={styles.dropdownContainerStyle}
-                activeColor="#67F2D1"
+                activeColor="#444F4C"
+                itemTextStyle={{ color: '#FFFFFF' }}
+                selectedTextProps={{ borderColor: 'red' }}
             />
         </View>
     );
@@ -111,15 +113,15 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
 
 function TargetExercises({ route, navigation }) {
     const authCtx = useContext(AuthContext);
-    const { selectedDays, currentDay, daysWithTargetArea, daysWithTargetExercises } = route.params;
+    const { selectedDays, currentDay, daysWithTargetArea, daysWithTargetExercises, daysWithNotes } = route.params;
     const stepPercentage = ((currentDay + 1) / selectedDays.length) * 100;
     const defaultTargetExercises = [
-        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
     ]
 
     const [exercises, setExercises] = useState(daysWithTargetExercises[selectedDays[currentDay]] || defaultTargetExercises);
+    const [notes, setNotes] = useState(daysWithNotes[selectedDays[currentDay]] || '');
 
     const handleBack = () => {
         if (currentDay === 0) {
@@ -145,10 +147,18 @@ function TargetExercises({ route, navigation }) {
             try {
                 const selectedDaysJ = JSON.stringify(selectedDays);
                 const daysWithTargetAreaJ = JSON.stringify(daysWithTargetArea);
-                const daysWithTargetExercisesJ = JSON.stringify(daysWithTargetExercises);
-                
-                await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ);
-                authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ }));
+                const daysWithTargetExercisesJ = JSON.stringify({
+                    ...daysWithTargetExercises,
+                    [selectedDays[currentDay]]: exercises,
+                });
+                const daysWithNotesJ = JSON.stringify({
+                    ...daysWithNotes,
+                    [selectedDays[currentDay]]: notes,
+                });
+
+                // console.log(selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysWithNotesJ);
+                await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysWithNotesJ);
+                authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ, daysWithNotes: daysWithNotesJ }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',
                 });
@@ -165,6 +175,10 @@ function TargetExercises({ route, navigation }) {
             daysWithTargetExercises: {
                 ...daysWithTargetExercises,
                 [selectedDays[currentDay]]: exercises,
+            },
+            daysWithNotes: {
+                ...daysWithNotes,
+                [selectedDays[currentDay]]: notes,
             }
         })
     }
@@ -195,7 +209,7 @@ function TargetExercises({ route, navigation }) {
                 </View>
             </View>
             <Text style={styles.workoutAreaText}>Which exercises will you work on <Text style={styles.selectedDay}>{selectedDays[currentDay]}?</Text></Text>
-            <ScrollView style={styles.exercisesContainer}>
+            <ScrollView style={styles.exercisesContainer} keyboardShouldPersistTaps="handled">
                 <View style={styles.exercisesContainerView}>
                     {exercises.map((exercise, index) => (
                         <View key={index} style={styles.exerciseContainer}>
@@ -220,6 +234,20 @@ function TargetExercises({ route, navigation }) {
                     <IconShare width={22} height={22} xmlData={addCircle} />
                     <Text style={styles.addMoreText}>Add more</Text>
                 </TouchableOpacity>
+                <View>
+                    <Text style={styles.exerciseNoteText}>Would you like to leave a personel note ?</Text>
+                    <View style={styles.exerciseNoteInputView}>
+                        <TextInput
+                            multiline
+                            numberOfLines={4}
+                            value={notes}
+                            onChangeText={setNotes}
+                            style={styles.exerciseNoteInput}
+                            placeholder="Add note..."
+                            placeholderTextColor='#C8C8C8'
+                        />
+                    </View>
+                </View>
             </ScrollView>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
@@ -347,21 +375,14 @@ const styles = StyleSheet.create({
     setRepItem: {
         flex: 1,
     },
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 1,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
-    },
     placeholderStyle: {
         fontSize: 16,
         fontFamily: 'roboto-regular',
         fontSize: 18,
         lineHeight: 42,
         color: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: 'red',
     },
     selectedTextStyle: {
         fontSize: 16,
@@ -392,8 +413,31 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     dropdownContainerStyle: {
-        backgroundColor: '#D3E1F9', // Customize this to change the background color of the dropdown
+        backgroundColor: '#393939', // Customize this to change the background color of the dropdown
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
+        borderWidth: 1,
+        borderColor: '#D4D4D433',
     },
+    exerciseNoteText: {
+        marginVertical: 24,
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontFamily: 'roboto-bold',
+        textAlign: 'center',
+    },
+    exerciseNoteInputView: {
+        paddingHorizontal: 8,
+        paddingVertical: 9,
+        backgroundColor: '#FFFFFF0D',
+        borderRadius: 10,
+    },
+    exerciseNoteInput: {
+        height: 65,
+        backgroundColor: '#FFFFFF1A',
+        color: '#C8C8C8',
+        padding: 8,
+        fontSize: 16,
+        borderRadius: 6,
+    }
 });

@@ -45,8 +45,10 @@ function TargetAreaScreen({ route, navigation }) {
                     [selectedDays[0]]: [
                         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
                         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
-                        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
                     ],
+                },
+                daysWithNotes: {
+                    [selectedDays[0]]: ''
                 }
             });
             return;
