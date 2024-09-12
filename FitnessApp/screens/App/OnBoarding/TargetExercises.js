@@ -105,7 +105,6 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
                 containerStyle={styles.dropdownContainerStyle}
                 activeColor="#444F4C"
                 itemTextStyle={{ color: '#FFFFFF' }}
-                selectedTextProps={{ borderColor: 'red' }}
             />
         </View>
     );
@@ -381,8 +380,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 42,
         color: '#FFFFFF',
-        borderWidth: 1,
-        borderColor: 'red',
     },
     selectedTextStyle: {
         fontSize: 16,
