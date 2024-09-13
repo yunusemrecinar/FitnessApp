@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
@@ -86,7 +87,7 @@ const weekDays = [
     { label: 'Sunday', value: 'Sunday' },
 ];
 
-function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setData }) {
+function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setData, isDaySelected }) {
     const [isFocus, setIsFocus] = useState(false);
 
     return (
@@ -104,9 +105,22 @@ function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setDat
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => {
-                    setIsFocus(false);
-                    dropdownChange(item.value, index, dKey, data, setData);
+                    if (!isDaySelected(item.value)) {
+                        setIsFocus(false);
+                        dropdownChange(item.value, index, dKey, data, setData);
+                    }
                 }}
+                renderItem={(item) => (
+                    <TouchableOpacity
+                        disabled={!isDaySelected(item.value)} // Disable touch interaction for already selected days
+                        style={{
+                            opacity: isDaySelected(item.value) ? 0.25 : 1, // Dim the already selected items
+                            padding: 10,
+                        }}
+                    >
+                        <Text style={{ color: '#FFFFFF' }}>{item.label}</Text>
+                    </TouchableOpacity>
+                )}
                 containerStyle={styles.dropdownContainerStyle}
                 activeColor="#444F4C"
                 itemTextStyle={{ color: '#FFFFFF' }}
@@ -116,6 +130,8 @@ function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setDat
 }
 
 function AddWorkoutScreen({ navigation }) {
+    const route = useRoute();
+    const { workoutDays } = route.params;
     const [workoutDay, setWorkoutDay] = useState([
         { day: 'Monday' },
     ]);
@@ -134,6 +150,8 @@ function AddWorkoutScreen({ navigation }) {
             setSelectedArea([...selectedArea, area]);
         }
     };
+
+    const isDaySelected = (dayValue) => workoutDays.some(wd => wd === dayValue);
 
     const dropdownChange = (value, index, key, data, setData) => {
         const updatedData = data.map((exercise, i) => {
@@ -190,19 +208,20 @@ function AddWorkoutScreen({ navigation }) {
                             <View style={styles.newWorkoutDayDropdown}>
                                 <DropDown
                                     dataSet={weekDays}
-                                    selected="Monday"
+                                    selected={workoutDay[0].day}
                                     index={0}
                                     dKey="day"
                                     dropdownChange={dropdownChange}
                                     data={workoutDay}
                                     setData={setWorkoutDay}
+                                    isDaySelected={isDaySelected}
                                 />
                             </View>
                         </View>
                         <Text style={styles.areasText}>Area</Text>
                         <AreaButtons />
                         <Text style={styles.newWorkoutExerciseText}>Exercises</Text>
-                        <View style={styles.exercisesContainerView}>
+                        {/* <View style={styles.exercisesContainerView}>
                             {exercises.map((exercise, index) => (
                                 <View key={index} style={styles.exerciseContainer}>
                                     <View style={styles.firstRow}>
@@ -218,7 +237,7 @@ function AddWorkoutScreen({ navigation }) {
                                     </View>
                                 </View>
                             ))}
-                        </View>
+                        </View> */}
                         <TouchableOpacity
                             style={styles.addMoreButton}
                             onPress={() => setExercises([...exercises, { exercise: '', sets: '', reps: '' }])}

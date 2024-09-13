@@ -23,7 +23,9 @@ function HomeScreen({ route, navigation }) {
             <View style={styles.header}>
                 <Text style={styles.title}>All workout plans</Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('AddWorkout')}
+                    onPress={() => navigation.navigate('AddWorkout', {
+                        workoutDays: JSON.parse(workoutPlans['selectedDays'])
+                    })}
                 >
                     <IconShare width={28} height={28} xmlData={addCircle} />
                 </TouchableOpacity>
