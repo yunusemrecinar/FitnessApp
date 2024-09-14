@@ -108,6 +108,27 @@ export const completeOnboarding = async (token, selectedDays, daysWithTargetArea
     }
 };
 
+// ADD NEW WORKOUT
+export const addNewWorkout = async (token, workout) => {
+    try {
+        const response = await axios.post(`${API_URL}/addNewWorkout`, 
+            {
+                workout: workout
+            },
+            {
+                headers: {
+                    Authorization: token,
+                },
+            }
+        );
+        const data = response.data;
+        
+        return data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
 // USER
 export const getUser = async () => {
     const token = await AsyncStorage.getItem('token');

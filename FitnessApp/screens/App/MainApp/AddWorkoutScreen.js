@@ -1,10 +1,12 @@
 import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useContext, useState } from "react";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import addCircle from "../../../assets/icons/add-circle";
 import xIcon from "../../../assets/icons/x-icon";
 import IconShare from "../../../components/ui/Icon";
+import { AuthContext } from "../../../store/auth-context";
+import { addNewWorkout } from "../../../util/http";
 
 const data = [
     { label: 'Bench Press', value: 'bench_press' },
@@ -130,6 +132,7 @@ function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setDat
 }
 
 function AddWorkoutScreen({ navigation }) {
+    const authCtx = useContext(AuthContext);
     const route = useRoute();
     const { workoutDays } = route.params;
     const [workoutDay, setWorkoutDay] = useState([
@@ -137,8 +140,9 @@ function AddWorkoutScreen({ navigation }) {
     ]);
     const [exercises, setExercises] = useState([
         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
-        { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
     ]);
+    const [notes, setNotes] = useState('');
+
     const [selectedArea, setSelectedArea] = useState(['Chest', 'Legs']);
 
     const areas = ['Arms', 'Chest', 'Belly', 'Buff', 'ABC', 'Legs'];
@@ -165,6 +169,25 @@ function AddWorkoutScreen({ navigation }) {
         });
 
         setData(updatedData);
+    }
+
+    const addWorkoutHandler = async () => {
+        const token = authCtx.token;
+        const newWorkout = {
+            day: workoutDay[0].day,
+            exercises: exercises,
+            areas: selectedArea,
+            notes: notes,
+        };
+
+        try {
+            const response = await addNewWorkout(token, newWorkout);
+            console.log(response);
+        } catch (error) {
+            Alert.alert('Error', error.message || 'Something went wrong');
+        }
+
+        console.log(newWorkout);
     }
 
     const AreaButtons = () => {
@@ -221,7 +244,7 @@ function AddWorkoutScreen({ navigation }) {
                         <Text style={styles.areasText}>Area</Text>
                         <AreaButtons />
                         <Text style={styles.newWorkoutExerciseText}>Exercises</Text>
-                        {/* <View style={styles.exercisesContainerView}>
+                        <View style={styles.exercisesContainerView}>
                             {exercises.map((exercise, index) => (
                                 <View key={index} style={styles.exerciseContainer}>
                                     <View style={styles.firstRow}>
@@ -237,7 +260,7 @@ function AddWorkoutScreen({ navigation }) {
                                     </View>
                                 </View>
                             ))}
-                        </View> */}
+                        </View>
                         <TouchableOpacity
                             style={styles.addMoreButton}
                             onPress={() => setExercises([...exercises, { exercise: '', sets: '', reps: '' }])}
@@ -245,9 +268,19 @@ function AddWorkoutScreen({ navigation }) {
                             <IconShare width={22} height={22} xmlData={addCircle} />
                             <Text style={styles.addMoreText}>Add more</Text>
                         </TouchableOpacity>
+                        <Text style={styles.noteText}>Note</Text>
+                        <TextInput
+                            multiline
+                            numberOfLines={4}
+                            value={notes}
+                            onChangeText={setNotes}
+                            style={styles.exerciseNoteInput}
+                            placeholder="Add note..."
+                            placeholderTextColor='#C8C8C8'
+                        />
                         <TouchableOpacity
                             style={styles.doneButton}
-                            onPress={() => console.log('Done')}
+                            onPress={addWorkoutHandler}
                         >
                             <Text style={styles.buttonText}>Done</Text>
                         </TouchableOpacity>
@@ -393,6 +426,23 @@ const styles = StyleSheet.create({
         lineHeight: 42,
         marginLeft: 10,
         textDecorationLine: 'underline',
+    },
+    noteText: {
+        fontFamily: 'roboto-medium',
+        fontSize: 16,
+        color: '#FFFFFF',
+        marginBottom: 12,
+    },
+    exerciseNoteInput: {
+        height: 65,
+        backgroundColor: '#FFFFFF1A',
+        color: '#C8C8C8',
+        padding: 8,
+        fontSize: 16,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#D4D4D433',
+        marginBottom: 25,
     },
     doneButton: {
         backgroundColor: '#67F2D1', // button background color
