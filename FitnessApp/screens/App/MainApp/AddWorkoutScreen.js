@@ -138,7 +138,7 @@ function AddWorkoutScreen({ navigation }) {
     const route = useRoute();
     const { workoutDays } = route.params;
     const [workoutDay, setWorkoutDay] = useState([
-        { day: 'Monday' },
+        { day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].filter(day => !workoutDays.includes(day))[0] },
     ]);
     const [exercises, setExercises] = useState([
         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },

@@ -219,6 +219,7 @@ function Navigation() {
   
   useEffect(() => {
     async function fetchToken() {
+      AsyncStorage.clear();
       const storedToken = await AsyncStorage.getItem('token');
 
       if (storedToken) {
