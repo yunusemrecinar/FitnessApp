@@ -141,11 +141,12 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid token'], 401);
         }
 
+        $workout = json_decode(json_encode($request->workout));
         // Get the new data from the request
-        $newDay = $request->day;
-        $newArea = $request->areas;
-        $newExercises = $request->exercises;
-        $newNotes = $request->notes;
+        $newDay = $workout->day;
+        $newArea = $workout->areas;
+        $newExercises = $workout->exercises;
+        $newNotes = $workout->notes;
 
         // Add workout data to the existing user workout plan
         $user = Redis::hgetall($userKey);

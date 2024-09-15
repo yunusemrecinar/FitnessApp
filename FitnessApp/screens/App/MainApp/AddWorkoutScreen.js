@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import addCircle from "../../../assets/icons/add-circle";
 import xIcon from "../../../assets/icons/x-icon";
@@ -99,7 +99,7 @@ function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setDat
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 data={dataSet}
-                maxHeight={190}
+                maxHeight={160}
                 labelField="label"
                 valueField="value"
                 placeholder={!isFocus ? 'Select item' : '...'}
@@ -107,22 +107,24 @@ function DropDown({ dataSet, selected, index, dKey, dropdownChange, data, setDat
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => {
-                    if (!isDaySelected(item.value)) {
+                    if (dKey !== 'day' || !isDaySelected(item.value)) {
                         setIsFocus(false);
                         dropdownChange(item.value, index, dKey, data, setData);
                     }
                 }}
-                renderItem={(item) => (
-                    <TouchableOpacity
-                        disabled={!isDaySelected(item.value)} // Disable touch interaction for already selected days
-                        style={{
-                            opacity: isDaySelected(item.value) ? 0.25 : 1, // Dim the already selected items
-                            padding: 10,
-                        }}
-                    >
-                        <Text style={{ color: '#FFFFFF' }}>{item.label}</Text>
-                    </TouchableOpacity>
-                )}
+                {...(dKey === 'day' && {
+                    renderItem: (item) => (
+                        <TouchableOpacity
+                            disabled={!isDaySelected(item.value)} // Disable touch interaction for already selected days
+                            style={{
+                                opacity: isDaySelected(item.value) ? 0.25 : 1, // Dim the already selected items
+                                padding: 10,
+                            }}
+                        >
+                            <Text style={{ color: '#FFFFFF', fontSize: 17, padding: 4, paddingVertical: 6 }}>{item.label}</Text>
+                        </TouchableOpacity>
+                    )
+                })}
                 containerStyle={styles.dropdownContainerStyle}
                 activeColor="#444F4C"
                 itemTextStyle={{ color: '#FFFFFF' }}
@@ -182,12 +184,11 @@ function AddWorkoutScreen({ navigation }) {
 
         try {
             const response = await addNewWorkout(token, newWorkout);
-            console.log(response);
+            navigation.goBack();
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }
 
-        console.log(newWorkout);
     }
 
     const AreaButtons = () => {
