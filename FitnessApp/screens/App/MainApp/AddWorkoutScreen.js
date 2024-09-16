@@ -184,6 +184,30 @@ function AddWorkoutScreen({ navigation }) {
 
         try {
             const response = await addNewWorkout(token, newWorkout);
+
+            // Add the new workout to the context
+            const oldDays = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).selectedDays);
+            const oldArea = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithTargetArea);
+            const oldExercises = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithTargetExercises);
+            const oldNotes = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithNotes);
+            const updatedWorkoutPlans = {
+                // Assuming 'selectedDays' and other keys exist in the plan
+                selectedDays: JSON.stringify([...oldDays, newWorkout.day]),
+                daysWithTargetArea: JSON.stringify({
+                    ...oldArea,
+                    [newWorkout.day]: newWorkout.areas
+                }),
+                daysWithTargetExercises: JSON.stringify({
+                    ...oldExercises,
+                    [newWorkout.day]: newWorkout.exercises
+                }),
+                daysWithNotes: JSON.stringify({
+                    ...oldNotes,
+                    [newWorkout.day]: newWorkout.notes
+                })
+            };
+
+            authCtx.setAllPlan(JSON.stringify(updatedWorkoutPlans));
             navigation.goBack();
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');

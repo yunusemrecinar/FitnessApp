@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import xIcon from '../../../assets/icons/x-icon';
 import IconShare from '../../../components/ui/Icon';
 
@@ -34,25 +35,27 @@ const WorkoutDetailScreen = ({ route, navigation }) => {
                             ))}
                         </View>
                     </View>
-                    <View style={styles.workouts}>
-                        {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].map((exercise, index) => (
-                            <View style={styles.workout} key={index}>
-                                <View>
-                                    <View style={styles.workoutCardLeft}>
-                                        <Text style={styles.workoutTitleText}>{index + 1}</Text>
+                    <ScrollView>
+                        <View style={styles.workouts}>
+                            {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].map((exercise, index) => (
+                                <View style={styles.workout} key={index}>
+                                    <View>
+                                        <View style={styles.workoutCardLeft}>
+                                            <Text style={styles.workoutTitleText}>{index + 1}</Text>
+                                        </View>
                                     </View>
-                                </View>
-                                <View style={styles.workoutCardRight}>
-                                    <Text style={styles.workoutRowTitle}>{exercise['exercise']}</Text>
-                                    <View style={styles.workoutSetRep}>
-                                        <Text style={styles.workoutSetRepText}>{exercise['sets']}</Text>
-                                        <Text style={styles.workoutSetRepText}>x{exercise['reps']}</Text>
-                                    </View>    
-                                </View>
+                                    <View style={styles.workoutCardRight}>
+                                        <Text style={styles.workoutRowTitle}>{exercise['exercise']}</Text>
+                                        <View style={styles.workoutSetRep}>
+                                            <Text style={styles.workoutSetRepText}>{exercise['sets']}</Text>
+                                            <Text style={styles.workoutSetRepText}>x{exercise['reps']}</Text>
+                                        </View>    
+                                    </View>
 
-                            </View>
-                        ))}
-                    </View>
+                                </View>
+                            ))}
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         </View>
@@ -118,6 +121,7 @@ const styles = StyleSheet.create({
     workouts: {
         marginTop: 42,
         gap: 16,
+        marginBottom: 70,
     },
     workout: {
         backgroundColor: '#FFFFFF0D',
