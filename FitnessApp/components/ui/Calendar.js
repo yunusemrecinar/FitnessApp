@@ -26,8 +26,8 @@ const Calendar = () => {
     return (
         <View style={styles.container}>
             {weekDays.map((day, index) => (
-                <TouchableOpacity>
-                    <View key={index} style={styles.dayContainer}>
+                <TouchableOpacity key={index}>
+                    <View style={styles.dayContainer}>
                         <Text style={styles.dayText}>{day.format('DD')}</Text>
                         <Text style={styles.dayText}>{day.format('ddd')}</Text>
                     </View>
