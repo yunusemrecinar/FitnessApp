@@ -15,7 +15,6 @@ function WorkoutsScreen({ route, navigation }) {
 
     useEffect(() => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
-        // console.log(authCtx.allWorkoutPlan);
     }, [authCtx.allWorkoutPlan]);
 
     return (

@@ -20,13 +20,15 @@ const WorkoutCard = ({ title, description, icon, isSelected, onPress }) => {
     );
 };
 
-const WorkoutPlanScreen = ({ navigation }) => {
+const WorkoutPlanScreen = ({ route, navigation }) => {
+    const { token } = route.params;
     const [selectedCard, setSelectedCard] = useState('Weekly');
 
     const handleNext = () => {
         if (selectedCard === 'Weekly') {
             navigation.replace('WorkoutSchedule', {
-                pickedDays: ['Tuesday', 'Friday']
+                pickedDays: ['Tuesday', 'Friday'],
+                token: token
             });
         }
     }

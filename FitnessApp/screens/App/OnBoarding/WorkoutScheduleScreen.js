@@ -5,7 +5,7 @@ const { width: screenWidth } = Dimensions.get('window');
 const stepWidth = screenWidth / 5 - 17;
 
 function WorkoutScheduleScreen({ route, navigation }) {
-    const { pickedDays } = route.params;
+    const { pickedDays, token } = route.params;
     const [selectedDays, setSelectedDays] = useState(pickedDays);
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -26,7 +26,8 @@ function WorkoutScheduleScreen({ route, navigation }) {
             currentDay: 0,
             prevDaysData: {
                 [filteredDays[0]]: ['Chest', 'Legs'],
-            }
+            },
+            token: token
         });        
     }
 

@@ -6,7 +6,9 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 const { width: screenWidth } = Dimensions.get('window');
 const stepWidth = screenWidth / 5 - 17;
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({ route, navigation }) => {
+    const { token } = route.params;
+
     return (
         <View style={styles.container}>
             <View style={styles.placeholder}>
@@ -35,7 +37,7 @@ const WelcomeScreen = ({ navigation }) => {
                 </MaskedView>
                 <TouchableOpacity 
                     style={styles.startButton} 
-                    onPress={() => navigation.replace('WorkoutPlan')}
+                    onPress={() => navigation.replace('WorkoutPlan', { token: token })}
                 >
                     <Text style={styles.buttonText}>Start</Text>
                     <AntDesign name="arrowright" size={24} color="black" />

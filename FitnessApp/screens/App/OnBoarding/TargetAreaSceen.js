@@ -5,7 +5,7 @@ const { width: screenWidth } = Dimensions.get('window');
 const stepWidth = screenWidth / 5 - 17;
 
 function TargetAreaScreen({ route, navigation }) {
-    const { selectedDays, currentDay, prevDaysData } = route.params;
+    const { selectedDays, currentDay, prevDaysData, token } = route.params;
     const [selectedArea, setSelectedArea] = useState(prevDaysData[selectedDays[currentDay]] || ['Chest', 'Legs']);
     const stepPercentage = ((currentDay + 1) / selectedDays.length) * 100;
 
@@ -49,7 +49,8 @@ function TargetAreaScreen({ route, navigation }) {
                 },
                 daysWithNotes: {
                     [selectedDays[0]]: ''
-                }
+                },
+                token: token
             });
             return;
         }
@@ -60,7 +61,8 @@ function TargetAreaScreen({ route, navigation }) {
             prevDaysData: {
                 ...prevDaysData,
                 [selectedDays[currentDay]]: selectedArea,
-            }
+            },
+            token: token
         });      
     }
 

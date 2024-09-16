@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
         iosClientId
     };
 
-    const [email, setEmail] = useState('yunus@gmail.com');
+    const [email, setEmail] = useState('yunus2@gmail.com');
     const [password, setPassword] = useState('yunus');
     const [showPassword, setShowPassword] = useState(false);
     const [request, response, promptAsync] = Google.useAuthRequest(config);
@@ -55,12 +55,7 @@ const LoginScreen = ({ navigation }) => {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
-            // console.log({
-            //     id: credential.identityToken,
-            //     authorization_code: credential.authorizationCode,
-            // });
         } catch (error) {
-            // console.log(error);
             if (error.code === "ERR_REQUEST_CANCELED") {
                 Alert.alert('Error', error.code || 'Something went wrong');
             } else {
@@ -74,16 +69,19 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
-            authCtx.authenticate(response.token);
-
+            const response = await login(email, password);
+            
             /* Navigating Logged In User Begin */
             if (response.user.is_first_time === 'true') {
                 navigation.replace('OnBoarding', {
                     screen: 'Welcome',
+                    params: {
+                        token: response.token,
+                    },
                 });
             } else {
+                authCtx.authenticate(response.token);
                 authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises, daysWithNotes: response.user.daysWithNotes }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',

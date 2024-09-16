@@ -112,7 +112,7 @@ function DropDown({ data, selected, index, dKey, dropdownChange }) {
 
 function TargetExercises({ route, navigation }) {
     const authCtx = useContext(AuthContext);
-    const { selectedDays, currentDay, daysWithTargetArea, daysWithTargetExercises, daysWithNotes } = route.params;
+    const { selectedDays, currentDay, daysWithTargetArea, daysWithTargetExercises, daysWithNotes, token } = route.params;
     const stepPercentage = ((currentDay + 1) / selectedDays.length) * 100;
     const defaultTargetExercises = [
         { exercise: 'bench_press', sets: '3 Sets', reps: '20' },
@@ -141,7 +141,6 @@ function TargetExercises({ route, navigation }) {
     }
 
     const handleNext = async () => {
-        const token = authCtx.token;
         if (currentDay === selectedDays.length - 1) {
             try {
                 const selectedDaysJ = JSON.stringify(selectedDays);
@@ -155,8 +154,8 @@ function TargetExercises({ route, navigation }) {
                     [selectedDays[currentDay]]: notes,
                 });
 
-                // console.log(selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysWithNotesJ);
                 await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysWithNotesJ);
+                authCtx.authenticate(token);
                 authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ, daysWithNotes: daysWithNotesJ }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',
@@ -178,7 +177,8 @@ function TargetExercises({ route, navigation }) {
             daysWithNotes: {
                 ...daysWithNotes,
                 [selectedDays[currentDay]]: notes,
-            }
+            },
+            token: token
         })
     }
 

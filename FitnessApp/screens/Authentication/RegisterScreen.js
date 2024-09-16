@@ -31,8 +31,6 @@ const RegisterScreen = ({ navigation }) => {
             const { authentication } = response;
             const token = authentication?.accessToken;
             const user = getUserProfile(token);
-
-            // console.log(token, user);
         }
     }
 
@@ -44,12 +42,7 @@ const RegisterScreen = ({ navigation }) => {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
-            // console.log({
-            //     id: credential.identityToken,
-            //     authorization_code: credential.authorizationCode,
-            // });
         } catch (error) {
-            // console.log(error);
             if (error.code === "ERR_REQUEST_CANCELED") {
                 Alert.alert('Error', error.code || 'Something went wrong');
             } else {

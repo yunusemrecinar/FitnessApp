@@ -6,7 +6,6 @@ import SixDigitInput from "../../components/ui/SixDigitInput";
 function ForgotPasswordCodeScreen({ route, navigation }) {
     const { email, emailCode } = route.params;
 
-    // console.log(email, emailCode);
     const [code, setCode] = useState('');
 
     function handleVerify() {

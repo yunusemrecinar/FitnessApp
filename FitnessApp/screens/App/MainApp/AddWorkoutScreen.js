@@ -286,13 +286,15 @@ function AddWorkoutScreen({ navigation }) {
                                 </View>
                             ))}
                         </View>
-                        <TouchableOpacity
-                            style={styles.addMoreButton}
-                            onPress={() => setExercises([...exercises, { exercise: '', sets: '', reps: '' }])}
-                        >
-                            <IconShare width={22} height={22} xmlData={addCircle} />
-                            <Text style={styles.addMoreText}>Add more</Text>
-                        </TouchableOpacity>
+                        <View style={styles.addMoreContainer}>
+                            <TouchableOpacity
+                                style={styles.addMoreButton}
+                                onPress={() => setExercises([...exercises, { exercise: '', sets: '', reps: '' }])}
+                            >
+                                <IconShare width={22} height={22} xmlData={addCircle} />
+                                <Text style={styles.addMoreText}>Add more</Text>
+                            </TouchableOpacity>
+                        </View>
                         <Text style={styles.noteText}>Note</Text>
                         <TextInput
                             multiline
@@ -439,6 +441,10 @@ const styles = StyleSheet.create({
         borderColor: '#D4D4D433',
     },
     /* dropdown end */
+    addMoreContainer: { 
+        flexDirection: 'row', 
+        justifyContent: 'flex-start' 
+    },
     addMoreButton: {
         flexDirection: 'row',
         alignItems: 'center',
