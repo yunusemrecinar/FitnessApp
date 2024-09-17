@@ -1,8 +1,9 @@
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import dumbell from '../../../assets/icons/dumbell';
+import exclamation from '../../../assets/icons/exclamation';
 import target from '../../../assets/icons/target';
 import IconShare from '../../../components/ui/Icon';
 import { AuthContext } from '../../../store/auth-context';
@@ -10,6 +11,12 @@ import { AuthContext } from '../../../store/auth-context';
 // const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
+    const exercises = [
+        { id: '1', name: 'Flat Barbell Bench Press', sets: 4, reps: 12 },
+        { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: 10 },
+        { id: '3', name: 'Dumbbell Flyes', sets: 3, reps: 12 },
+        // Add more exercises as needed
+    ];
     const authCtx = useContext(AuthContext);
     const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
     const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
@@ -22,7 +29,17 @@ const HomeScreen = () => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
     }, [authCtx.allWorkoutPlan]);
 
-    console.log('workoutPlans', workoutPlans);
+    const renderExerciseCard = ({ item, index }) => (
+        <View style={styles.fCard} key={index}>
+            <View style={styles.fNumberCircle}>
+                <Text style={styles.fNumberText}>{index + 1}</Text>
+            </View>
+            <View style={styles.fDescription}>
+                <Text style={styles.fExerciseName}>{item.exercise}</Text>
+                <Text style={styles.fExerciseDetails}>{`${item.sets}   x${item.reps}`}</Text>
+            </View>
+        </View>
+    );
 
     return (
         <View style={styles.container}>
@@ -35,19 +52,35 @@ const HomeScreen = () => {
                 <View style={styles.workoutIntro}>
                     <View style={[styles.halfCard, styles.workoutArea]}>
                         <View style={styles.workoutAreaFirstRow}>
-                            <Text style={styles.cardInfo}>{JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
+                            <Text style={styles.cardInfo}>{workoutPlans &&  JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
                             <IconShare width={34} height={34} xmlData={target} />
                         </View>
                         <Text style={styles.description}>Target Area</Text>
                     </View>
                     <View style={[styles.halfCard, styles.workoutExerciseNum]}>
                         <View style={styles.workoutAreaFirstRow}>
-                            <Text style={styles.cardInfo}>{JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
+                            <Text style={styles.cardInfo}>{workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
                             <IconShare width={34} height={34} xmlData={dumbell} />
                         </View>
                         <Text style={styles.description}>Target Area</Text>
                     </View>
                 </View>
+                {/* progress row */}
+                <View style={styles.exclamationRow}>
+                    <IconShare width={19} height={19} xmlData={exclamation} />
+                    <Text style={styles.description}>5-10 mins cardio before workout</Text>
+                </View>
+            </View>
+            <View style={styles.exercises}>
+                <Text style={styles.exerciseHeader}>Exercises</Text>
+                <FlatList
+                    horizontal
+                    data={workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay]}
+                    renderItem={renderExerciseCard}
+                    keyExtractor={(item, index) => index}
+                    contentContainerStyle={styles.list}
+                    showsHorizontalScrollIndicator={false}
+                />
             </View>
         </View>
     );
@@ -180,15 +213,16 @@ const styles = StyleSheet.create({
     },
     halfCard: {
         flex: 1,
-        borderWidth: 1,
         backgroundColor: '#FFFFFF1A',
         padding: 20,
         borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#D4D4D433',
     },
     workoutAreaFirstRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 12,
+        marginBottom: 16,
         alignItems: 'center',
     },
     cardInfo: {
@@ -201,6 +235,60 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'roboto-bold',
     },
+    exerciseHeader: {
+        fontSize: 20,
+        color: '#FFFFFF',
+        fontFamily: 'roboto-bold',
+        marginBottom: 20,
+        marginTop: 25
+    },  
+    exclamationRow: {
+        flexDirection: 'row',
+        marginTop: 15,
+        gap: 11,
+    },
+    /* Flat List Exercise */
+    fCard: {
+        width: 125,
+        backgroundColor: '#333',
+        borderRadius: 10,
+        padding: 10,
+        paddingBottom: 15,
+        marginRight: 15,
+        borderWidth: 1,
+        borderColor: '#D4D4D433',
+    },
+    fNumberCircle: {
+        backgroundColor: '#FFFFFF1A',
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#D4D4D433',
+        width: 28,
+        height: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 40,
+    },
+    fNumberText: {
+        color: '#67F2D1',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    fDescription: {
+        gap: 6,
+    },
+    fExerciseName: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontFamily: 'roboto-medium',
+        lineHeight: 22,
+    },
+    fExerciseDetails: {
+        color: '#B4B4B4',
+        fontFamily: 'roboto-regular',
+        fontSize: 16,
+    },
+    /* Flat List Exercise */
 });
 
 export default HomeScreen;
