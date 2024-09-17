@@ -1,30 +1,64 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import dumbell from '../../../assets/icons/dumbell';
+import target from '../../../assets/icons/target';
+import IconShare from '../../../components/ui/Icon';
+import { AuthContext } from '../../../store/auth-context';
 
-const { width } = Dimensions.get('window');
+// const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
+    const authCtx = useContext(AuthContext);
+    const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
+    const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
+
+    useEffect(() => { // when the component is mounted
+        authCtx.fetchWorkoutPlan();
+    }, []);
+
+    useEffect(() => {
+        setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
+    }, [authCtx.allWorkoutPlan]);
+
+    console.log('workoutPlans', workoutPlans);
+
     return (
         <View style={styles.container}>
-            <Calendar />
+            <Calendar setCurrentDay={setCurrentDay} />
             <View style={styles.line} />
             <View style={styles.todaysWorkout}>
                 <View style={styles.planHeader}>
                     <Text style={styles.planHeaderText}>Today's Plan:</Text>
+                </View>
+                <View style={styles.workoutIntro}>
+                    <View style={[styles.halfCard, styles.workoutArea]}>
+                        <View style={styles.workoutAreaFirstRow}>
+                            <Text style={styles.cardInfo}>{JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
+                            <IconShare width={34} height={34} xmlData={target} />
+                        </View>
+                        <Text style={styles.description}>Target Area</Text>
+                    </View>
+                    <View style={[styles.halfCard, styles.workoutExerciseNum]}>
+                        <View style={styles.workoutAreaFirstRow}>
+                            <Text style={styles.cardInfo}>{JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
+                            <IconShare width={34} height={34} xmlData={dumbell} />
+                        </View>
+                        <Text style={styles.description}>Target Area</Text>
+                    </View>
                 </View>
             </View>
         </View>
     );
 };
 
-const Calendar = () => {
+const Calendar = ({ setCurrentDay }) => {
     const [weekDays, setWeekDays] = useState([]);
     const [selectedDay, setSelectedDay] = useState(moment().format('YYYY-MM-DD'));
 
     const calendarWidth = 350; // Total calendar width based on container width
-    const dayWidth = 50; // Width of each day
+    const dayWidth = calendarWidth / 7; // Width of each day
     const animatedPosition = useSharedValue(0); // Starting position for the highlight
 
     useEffect(() => {
@@ -50,6 +84,7 @@ const Calendar = () => {
 
     const handleDayPress = (day, index) => {
         setSelectedDay(day.format('YYYY-MM-DD'));
+        setCurrentDay(day.format('dddd'));
         animatedPosition.value = withTiming(index * dayWidth, { duration: 300 }); // Animate to the new day position
     };
 
@@ -136,6 +171,34 @@ const styles = StyleSheet.create({
     planHeaderText: {
         fontSize: 20,
         color: '#FFFFFF',
+        fontFamily: 'roboto-bold',
+    },
+    workoutIntro: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 12,
+    },
+    halfCard: {
+        flex: 1,
+        borderWidth: 1,
+        backgroundColor: '#FFFFFF1A',
+        padding: 20,
+        borderRadius: 10,
+    },
+    workoutAreaFirstRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 12,
+        alignItems: 'center',
+    },
+    cardInfo: {
+        fontFamily: 'roboto-bold',
+        fontSize: 24,
+        color: '#FFFFFF',
+    },
+    description: {
+        color: '#B4B4B4',
+        fontSize: 16,
         fontFamily: 'roboto-bold',
     },
 });
