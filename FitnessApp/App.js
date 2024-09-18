@@ -19,6 +19,7 @@ import AddWorkoutScreen from './screens/App/MainApp/AddWorkoutScreen.js';
 import HistoryScreen from './screens/App/MainApp/HistoryScreen';
 import HomeScreen from './screens/App/MainApp/HomeScreen';
 import ProfileScreen from './screens/App/MainApp/ProfileScreen';
+import SettingsScreen from './screens/App/MainApp/SettingsScreen';
 import WorkoutDetailScreen from './screens/App/MainApp/WorkoutDetailScreen.js';
 import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
 import TargetAreaScreen from './screens/App/OnBoarding/TargetAreaSceen.js';
@@ -208,6 +209,11 @@ function AuthenticatedStack() {
           presentation: 'modal',
         }}
       />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   )
 }
@@ -219,7 +225,6 @@ function Navigation() {
   
   useEffect(() => {
     async function fetchToken() {
-      AsyncStorage.clear();
       const storedToken = await AsyncStorage.getItem('token');
 
       if (storedToken) {
@@ -283,6 +288,7 @@ const App = () => {
     'roboto-condensed-bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
     'roboto-flex': require('./assets/fonts/RobotoFlex-Regular.ttf'),
     'caladea-bold': require('./assets/fonts/Caladea-Bold.ttf'),
+    'roboto-mono-bold': require('./assets/fonts/RobotoMono-Bold.ttf'),
   });
   const [showSplash, setShowSplash] = useState(true);
 

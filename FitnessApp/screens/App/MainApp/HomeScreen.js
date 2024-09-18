@@ -45,43 +45,48 @@ const HomeScreen = () => {
         <View style={styles.container}>
             <Calendar setCurrentDay={setCurrentDay} />
             <View style={styles.line} />
-            <View style={styles.todaysWorkout}>
-                <View style={styles.planHeader}>
-                    <Text style={styles.planHeaderText}>Today's Plan:</Text>
-                </View>
-                <View style={styles.workoutIntro}>
-                    <View style={[styles.halfCard, styles.workoutArea]}>
-                        <View style={styles.workoutAreaFirstRow}>
-                            <Text style={styles.cardInfo}>{workoutPlans &&  JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
-                            <IconShare width={34} height={34} xmlData={target} />
-                        </View>
-                        <Text style={styles.description}>Target Area</Text>
+            {workoutPlans &&
+                workoutPlans['daysWithTargetArea'] &&
+                JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay] && (
+                <View style={styles.todaysWorkout}>
+                    <View style={styles.planHeader}>
+                        <Text style={styles.planHeaderText}>Today's Plan:</Text>
                     </View>
-                    <View style={[styles.halfCard, styles.workoutExerciseNum]}>
-                        <View style={styles.workoutAreaFirstRow}>
-                            <Text style={styles.cardInfo}>{workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
-                            <IconShare width={34} height={34} xmlData={dumbell} />
+                    <View style={styles.workoutIntro}>
+                        <View style={[styles.halfCard, styles.workoutArea]}>
+                            <View style={styles.workoutAreaFirstRow}>
+                                <Text style={styles.cardInfo}>{workoutPlans &&  JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
+                                <IconShare width={34} height={34} xmlData={target} />
+                            </View>
+                            <Text style={styles.description}>Target Area</Text>
                         </View>
-                        <Text style={styles.description}>Target Area</Text>
+                        <View style={[styles.halfCard, styles.workoutExerciseNum]}>
+                            <View style={styles.workoutAreaFirstRow}>
+                                <Text style={styles.cardInfo}>{workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
+                                <IconShare width={34} height={34} xmlData={dumbell} />
+                            </View>
+                            <Text style={styles.description}>Target Area</Text>
+                        </View>
+                    </View>
+                    {/* progress row */}
+                    <View style={styles.exclamationRow}>
+                        <IconShare width={19} height={19} xmlData={exclamation} />
+                        <Text style={styles.description}>5-10 mins cardio before workout</Text>
+                    </View>
+                    <View style={styles.exercises}>
+                        <Text style={styles.exerciseHeader}>Exercises</Text>
+                        <FlatList
+                            horizontal
+                            data={workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay]}
+                            renderItem={renderExerciseCard}
+                            keyExtractor={(item, index) => index}
+                            contentContainerStyle={styles.list}
+                            showsHorizontalScrollIndicator={false}
+                        />
                     </View>
                 </View>
-                {/* progress row */}
-                <View style={styles.exclamationRow}>
-                    <IconShare width={19} height={19} xmlData={exclamation} />
-                    <Text style={styles.description}>5-10 mins cardio before workout</Text>
-                </View>
-            </View>
-            <View style={styles.exercises}>
-                <Text style={styles.exerciseHeader}>Exercises</Text>
-                <FlatList
-                    horizontal
-                    data={workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay]}
-                    renderItem={renderExerciseCard}
-                    keyExtractor={(item, index) => index}
-                    contentContainerStyle={styles.list}
-                    showsHorizontalScrollIndicator={false}
-                />
-            </View>
+                )
+            }
         </View>
     );
 };
