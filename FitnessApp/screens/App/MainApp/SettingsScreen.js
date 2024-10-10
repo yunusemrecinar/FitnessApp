@@ -33,11 +33,16 @@ const SettingsScreen = ({ navigation }) => {
     //     }
     // };
 
+    function handleLogout() {
+        authCtx.logout();
+        navigation.replace('AuthStack');
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => { navigation.goBack() }}
                 >
                     <View style={styles.leftArrow}>
                         <IconShare width={18} height={15} xmlData={leftArrow} />
@@ -45,7 +50,7 @@ const SettingsScreen = ({ navigation }) => {
                 </TouchableOpacity>
                 <Text style={styles.title}>Settings</Text>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => handleLogout()}
                 >
                     <View style={styles.exit}>
                         <IconShare width={18} height={18} xmlData={exit} />

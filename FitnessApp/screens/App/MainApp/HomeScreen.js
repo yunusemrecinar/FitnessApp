@@ -1,22 +1,17 @@
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import dumbell from '../../../assets/icons/dumbell';
 import exclamation from '../../../assets/icons/exclamation';
 import target from '../../../assets/icons/target';
+import FlatButton from '../../../components/ui/FlatButton';
 import IconShare from '../../../components/ui/Icon';
 import { AuthContext } from '../../../store/auth-context';
 
 // const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
-    const exercises = [
-        { id: '1', name: 'Flat Barbell Bench Press', sets: 4, reps: 12 },
-        { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: 10 },
-        { id: '3', name: 'Dumbbell Flyes', sets: 3, reps: 12 },
-        // Add more exercises as needed
-    ];
     const authCtx = useContext(AuthContext);
     const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
     const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
@@ -29,8 +24,92 @@ const HomeScreen = () => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
     }, [authCtx.allWorkoutPlan]);
 
-    const renderExerciseCard = ({ item, index }) => (
-        <View style={styles.fCard} key={index}>
+    const updateExerciseWeight = (exerciseId, weight) => {
+        setWorkoutPlans((prevWorkoutPlans) => {
+            const updatedPlans = { ...prevWorkoutPlans };
+            const exercisesForDay = JSON.parse(updatedPlans['daysWithTargetExercises'])[currentDay].map((exercise, index) => {
+                if (index === exerciseId) {
+                    return { ...exercise, weight: weight };
+                }
+                return exercise;
+            });
+
+            updatedPlans['daysWithTargetExercises'] = {
+                ...JSON.parse(updatedPlans['daysWithTargetExercises']),
+                [currentDay]: exercisesForDay,
+            };
+
+            // Convert back to JSON string
+            updatedPlans['daysWithTargetExercises'] = JSON.stringify(updatedPlans['daysWithTargetExercises']);
+
+            authCtx.setAllPlan(JSON.stringify(updatedPlans));
+            return updatedPlans;
+        });
+    };
+
+    const ExerciseCard = ({ exercise, index }) => {
+        const [modalVisible, setModalVisible] = useState(false);
+        const [weight, setWeight] = useState(exercise.weight || '');
+
+        return (
+            <>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <View style={styles.fCard}>
+                        <View style={styles.fNumberCircle}>
+                            <Text style={styles.fNumberText}>{index + 1}</Text>
+                        </View>
+                        <View style={styles.fDescription}>
+                            <Text style={styles.fExerciseName}>{exercise.exercise}</Text>
+                            <Text style={styles.fExerciseDetails}>{`${exercise.sets}   x${exercise.reps}`}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>Set Weight</Text>
+
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter weight"
+                                value={weight}
+                                keyboardType="numeric"
+                                onChangeText={(text) => setWeight(text)}
+                            />
+
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity
+                                    style={styles.cancelButton}
+                                    onPress={() => setModalVisible(false)}
+                                >
+                                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={styles.saveButton}
+                                    onPress={() => {
+                                        updateExerciseWeight(index, weight);
+                                        setModalVisible(false);
+                                    }}
+                                >
+                                    <Text style={styles.saveButtonText}>Save</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </>
+        );
+    };
+
+    const RenderExerciseCard = ({ item, index }) => (
+        <View style={styles.fCard}>
             <View style={styles.fNumberCircle}>
                 <Text style={styles.fNumberText}>{index + 1}</Text>
             </View>
@@ -48,41 +127,45 @@ const HomeScreen = () => {
             {workoutPlans &&
                 workoutPlans['daysWithTargetArea'] &&
                 JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay] && (
-                <View style={styles.todaysWorkout}>
-                    <View style={styles.planHeader}>
-                        <Text style={styles.planHeaderText}>Today's Plan:</Text>
-                    </View>
-                    <View style={styles.workoutIntro}>
-                        <View style={[styles.halfCard, styles.workoutArea]}>
-                            <View style={styles.workoutAreaFirstRow}>
-                                <Text style={styles.cardInfo}>{workoutPlans &&  JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
-                                <IconShare width={34} height={34} xmlData={target} />
-                            </View>
-                            <Text style={styles.description}>Target Area</Text>
+                <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                    <View style={styles.todaysWorkout}>
+                        <View style={styles.planHeader}>
+                            <Text style={styles.planHeaderText}>Today's Plan:</Text>
                         </View>
-                        <View style={[styles.halfCard, styles.workoutExerciseNum]}>
-                            <View style={styles.workoutAreaFirstRow}>
-                                <Text style={styles.cardInfo}>{workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
-                                <IconShare width={34} height={34} xmlData={dumbell} />
+                        <View style={styles.workoutIntro}>
+                            <View style={[styles.halfCard, styles.workoutArea]}>
+                                <View style={styles.workoutAreaFirstRow}>
+                                    <Text style={styles.cardInfo}>{workoutPlans &&  JSON.parse(workoutPlans['daysWithTargetArea'])[currentDay][0]}</Text>
+                                    <IconShare width={34} height={34} xmlData={target} />
+                                </View>
+                                <Text style={styles.description}>Target Area</Text>
                             </View>
-                            <Text style={styles.description}>Target Area</Text>
+                            <View style={[styles.halfCard, styles.workoutExerciseNum]}>
+                                <View style={styles.workoutAreaFirstRow}>
+                                    <Text style={styles.cardInfo}>{workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay].length}</Text>
+                                    <IconShare width={34} height={34} xmlData={dumbell} />
+                                </View>
+                                <Text style={styles.description}>Target Area</Text>
+                            </View>
+                        </View>
+                        <View style={styles.exclamationRow}>
+                            <IconShare width={19} height={19} xmlData={exclamation} />
+                            <Text style={styles.description}>5-10 mins cardio before workout</Text>
+                        </View>
+                        <View style={styles.exercises}>
+                            <Text style={styles.exerciseHeader}>Exercises</Text>
+                            <FlatList
+                                horizontal
+                                data={workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay]}
+                                renderItem={({ item, index }) => <ExerciseCard exercise={item} index={index} />}
+                                keyExtractor={(item, index) => index}
+                                contentContainerStyle={styles.list}
+                                showsHorizontalScrollIndicator={false}
+                            />
                         </View>
                     </View>
-                    {/* progress row */}
-                    <View style={styles.exclamationRow}>
-                        <IconShare width={19} height={19} xmlData={exclamation} />
-                        <Text style={styles.description}>5-10 mins cardio before workout</Text>
-                    </View>
-                    <View style={styles.exercises}>
-                        <Text style={styles.exerciseHeader}>Exercises</Text>
-                        <FlatList
-                            horizontal
-                            data={workoutPlans && JSON.parse(workoutPlans['daysWithTargetExercises'])[currentDay]}
-                            renderItem={renderExerciseCard}
-                            keyExtractor={(item, index) => index}
-                            contentContainerStyle={styles.list}
-                            showsHorizontalScrollIndicator={false}
-                        />
+                    <View style={{ marginBottom: 22 }}>
+                        <FlatButton onPress={() => {}}>Complete</FlatButton>
                     </View>
                 </View>
                 )
@@ -254,6 +337,7 @@ const styles = StyleSheet.create({
     },
     /* Flat List Exercise */
     fCard: {
+        height: 160,
         width: 125,
         backgroundColor: '#333',
         borderRadius: 10,
@@ -262,6 +346,7 @@ const styles = StyleSheet.create({
         marginRight: 15,
         borderWidth: 1,
         borderColor: '#D4D4D433',
+        justifyContent: 'space-between',
     },
     fNumberCircle: {
         backgroundColor: '#FFFFFF1A',
@@ -272,7 +357,6 @@ const styles = StyleSheet.create({
         height: 28,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 40,
     },
     fNumberText: {
         color: '#67F2D1',
@@ -294,6 +378,72 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     /* Flat List Exercise */
+    exerciseCard: {
+        backgroundColor: '#2D2D2D',
+        borderRadius: 10,
+        padding: 16,
+        marginBottom: 12,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-end', // Push the modal to the bottom
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    },
+    modalContent: {
+        backgroundColor: '#1A1A1A', // Match your app's dark theme
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        height: '35%', // Occupy only 35% of the screen
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        color: '#FFF',
+        marginBottom: 10,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        width: '100%',
+        marginBottom: 20,
+        backgroundColor: '#FFF', // White input background
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    cancelButton: {
+        backgroundColor: '#444', // Gray for cancel
+        padding: 12,
+        paddingVertical: 18,
+        borderRadius: 10,
+        flex: 0.48,
+        alignItems: 'center',
+    },
+    cancelButtonText: {
+        color: '#FFF',
+        fontWeight: 'bold',
+    },
+    saveButton: {
+        backgroundColor: '#00D9A5', // Accent color for save
+        padding: 12,
+        paddingVertical: 18,
+        borderRadius: 10,
+        flex: 0.48,
+        alignItems: 'center',
+    },
+    saveButtonText: {
+        color: '#FFF',
+        fontWeight: 'bold',
+    },
 });
 
 export default HomeScreen;
