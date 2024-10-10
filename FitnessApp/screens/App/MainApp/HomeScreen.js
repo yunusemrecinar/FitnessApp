@@ -165,13 +165,17 @@ const HomeScreen = () => {
                         </View>
                     </View>
                     <View style={{ marginBottom: 22 }}>
-                        <FlatButton onPress={() => {}}>Complete</FlatButton>
+                        <FlatButton onPress={() => handleCompleteWorkout()}>Complete</FlatButton>
                     </View>
                 </View>
                 )
             }
         </View>
     );
+
+    function handleCompleteWorkout() {
+        authCtx.completeWorkout();
+    }
 };
 
 const Calendar = ({ setCurrentDay }) => {
