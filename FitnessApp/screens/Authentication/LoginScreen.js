@@ -23,8 +23,8 @@ const LoginScreen = ({ navigation }) => {
         iosClientId
     };
 
-    const [email, setEmail] = useState('yunus2@gmail.com');
-    const [password, setPassword] = useState('yunus');
+    const [email, setEmail] = useState('yunus3@gmail.com');
+    const [password, setPassword] = useState('yunus3');
     const [showPassword, setShowPassword] = useState(false);
     const [request, response, promptAsync] = Google.useAuthRequest(config);
 
@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
                 });
             } else {
                 authCtx.authenticate(response.token);
-                authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises, daysWithNotes: response.user.daysWithNotes }));
+                authCtx.setAllPlan(JSON.stringify({ selectedDays: response.user.selectedDays, daysWithTargetArea: response.user.daysWithTargetArea, daysWithTargetExercises: response.user.daysWithTargetExercises, daysCompleted: response.user.daysCompleted, daysWithNotes: response.user.daysWithNotes }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',
                 });

@@ -210,7 +210,16 @@ function AddWorkoutScreen({ navigation }) {
             authCtx.setAllPlan(JSON.stringify(updatedWorkoutPlans));
             navigation.goBack();
         } catch (error) {
-            Alert.alert('Error', error.message || 'Something went wrong');
+            if (error.response && error.response.status === 401) {
+                authCtx.logout();
+                Alert.alert('Session Expired', 'Please log in again');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'AuthStack' }]  // Reset to AuthStack
+                });
+            } else {
+                Alert.alert('Error', error.response.message || 'Something went wrong');
+            }
         }
 
     }

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import dumbell from '../../../assets/icons/dumbell';
 import exclamation from '../../../assets/icons/exclamation';
@@ -8,12 +8,12 @@ import target from '../../../assets/icons/target';
 import FlatButton from '../../../components/ui/FlatButton';
 import IconShare from '../../../components/ui/Icon';
 import { AuthContext } from '../../../store/auth-context';
-
-// const { width } = Dimensions.get('window');
+import { completeWorkout } from '../../../util/http';
 
 const HomeScreen = () => {
     const authCtx = useContext(AuthContext);
     const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
+    const [selectedDay, setSelectedDay] = useState(moment().format('YYYY-MM-DD'));
     const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
 
     useEffect(() => { // when the component is mounted
@@ -108,21 +108,47 @@ const HomeScreen = () => {
         );
     };
 
-    const RenderExerciseCard = ({ item, index }) => (
-        <View style={styles.fCard}>
-            <View style={styles.fNumberCircle}>
-                <Text style={styles.fNumberText}>{index + 1}</Text>
-            </View>
-            <View style={styles.fDescription}>
-                <Text style={styles.fExerciseName}>{item.exercise}</Text>
-                <Text style={styles.fExerciseDetails}>{`${item.sets}   x${item.reps}`}</Text>
-            </View>
-        </View>
-    );
+    const handleCompleteWorkout = async () => {
+        const token = authCtx.token;
+        const completedWorkoutDay = selectedDay;
+
+        try {
+            const response = await completeWorkout(token, completedWorkoutDay);
+
+            // Safely update the workoutPlans context with the new data
+            const daysCompleted = typeof workoutPlans['daysCompleted'] === 'string' 
+            ? JSON.parse(workoutPlans['daysCompleted']) 
+            : workoutPlans['daysCompleted'];
+
+            // update the workoutPlans context with the new data
+            const updatedWorkoutPlans = {
+                ...workoutPlans,
+                daysCompleted: {
+                    ...daysCompleted,
+                    [completedWorkoutDay]: '1',
+                },
+            };
+
+            // Convert back to JSON string
+            updatedWorkoutPlans['daysCompleted'] = JSON.stringify(updatedWorkoutPlans['daysCompleted']);
+            authCtx.setAllPlan(JSON.stringify(updatedWorkoutPlans));
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                authCtx.logout();
+                Alert.alert('Session Expired', 'Please log in again');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'AuthStack' }]  // Reset to AuthStack
+                });
+            } else {
+                Alert.alert('Error', error.response.message || 'Something went wrong');
+            }
+        }
+    };
 
     return (
         <View style={styles.container}>
-            <Calendar setCurrentDay={setCurrentDay} />
+            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} /> 
             <View style={styles.line} />
             {workoutPlans &&
                 workoutPlans['daysWithTargetArea'] &&
@@ -165,22 +191,26 @@ const HomeScreen = () => {
                         </View>
                     </View>
                     <View style={{ marginBottom: 22 }}>
-                        <FlatButton onPress={() => handleCompleteWorkout()}>Complete</FlatButton>
+                    {JSON.parse(workoutPlans['daysCompleted'])[selectedDay] ? (
+                        <FlatButton disabled={true}>
+                            Completed
+                        </FlatButton>
+                    ) : (
+                        <FlatButton onPress={handleCompleteWorkout}>
+                            Complete
+                        </FlatButton>
+                    )}
                     </View>
                 </View>
                 )
             }
         </View>
     );
-
-    function handleCompleteWorkout() {
-        authCtx.completeWorkout();
-    }
+    
 };
 
-const Calendar = ({ setCurrentDay }) => {
+const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay }) => {
     const [weekDays, setWeekDays] = useState([]);
-    const [selectedDay, setSelectedDay] = useState(moment().format('YYYY-MM-DD'));
 
     const calendarWidth = 350; // Total calendar width based on container width
     const dayWidth = calendarWidth / 7; // Width of each day
@@ -448,6 +478,13 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontWeight: 'bold',
     },
+    completedButton: {
+        backgroundColor: '#ccc', // Gray background for completed
+        paddingVertical: 18,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },    
 });
 
 export default HomeScreen;

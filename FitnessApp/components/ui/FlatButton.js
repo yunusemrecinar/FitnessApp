@@ -1,13 +1,17 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-function FlatButton({ children, onPress }) {
+function FlatButton({ children, onPress, disabled }) {
     return (
         <Pressable
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-            onPress={onPress}
+            style={({ pressed }) => [
+                styles.button, 
+                pressed && !disabled && styles.pressed, 
+                disabled && styles.disabledButton
+            ]}
+            onPress={!disabled ? onPress : null}
         >
             <View>
-                <Text style={styles.buttonText} >{children}</Text>
+                <Text style={[styles.buttonText, disabled && styles.disabledText]}>{children}</Text>
             </View>
         </Pressable>
     )
@@ -36,5 +40,13 @@ const styles = StyleSheet.create({
         color: '#222222',
         fontSize: 18,
         textAlign: 'center',
+    },
+    disabledButton: {
+        backgroundColor: '#ccc', // Gray for completed state
+        shadowOpacity: 0, // No shadow for disabled button
+        elevation: 0, // No shadow on Android
+    },
+    disabledText: {
+        color: '#888', // Lighter text color for disabled state
     },
 });

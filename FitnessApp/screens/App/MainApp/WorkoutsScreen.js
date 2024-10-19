@@ -31,7 +31,7 @@ function WorkoutsScreen({ route, navigation }) {
             </View>
             <ScrollView style={styles.workouts}>
                 <View style={styles.workoutsView}>
-                    {workoutPlans && JSON.parse(workoutPlans['selectedDays']).map((workoutDay, index) => (
+                    {workoutPlans['selectedDays'] && JSON.parse(workoutPlans['selectedDays']).map((workoutDay, index) => (
                         <View key={index}>
                             <Text style={styles.workoutTitleText}>{workoutDay}</Text>
                             <TouchableOpacity

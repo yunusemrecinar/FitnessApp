@@ -30,7 +30,7 @@ class AuthController extends Controller
             'id' => Str::uuid(),
             'email' => $request->email,
             'password' => $hashedPassword,
-            'is_first_time' => true,
+            'is_first_time' => 'true',
         ]);
 
         return response()->json([
@@ -51,8 +51,8 @@ class AuthController extends Controller
                 'given_name' => $request->user['given_name'],
                 'name' => $request->user['name'],
                 'picture' => $request->user['picture'],
-                'verified_email' => true,
-                'is_first_time' => true,
+                'verified_email' => 'true',
+                'is_first_time' => 'true',
             ]);
         }
 
@@ -119,11 +119,12 @@ class AuthController extends Controller
         // Update user data in Redis
         // selectedDays, daysWithTargetArea, daysWithTargetExercises
         Redis::hmset($userKey, [
-            'is_first_time' => "false",
+            'is_first_time' => 'false',
             'selectedDays' => $request->selectedDays,
             'daysWithTargetArea' => $request->daysWithTargetArea,
             'daysWithTargetExercises' => $request->daysWithTargetExercises,
             'daysWithNotes' => $request->daysWithNotes,
+            'daysCompleted' => $request->daysCompleted,
         ]);
 
         return response()->json([
@@ -169,6 +170,63 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Workout added successfully'
+        ], 201);
+    }
+
+    public function updateWorkoutExercise(Request $request)
+    {
+        // Get user key from token
+        $token = $request->header('Authorization');
+        $userKey = Redis::get('auth:tokens:' . $token);
+
+        if (!$userKey) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+
+        $workout = json_decode(json_encode($request->workout));
+        // Get the new data from the request
+        $day = $workout->day;
+        $exercises = $workout->exercises;
+
+        // Add workout data to the existing user workout plan
+        $user = Redis::hgetall($userKey);
+        $daysWithTargetExercises = json_decode($user['daysWithTargetExercises']);
+        $daysWithTargetExercises->{$day} = $exercises;
+        
+        // Update user data in Redis
+        Redis::hmset($userKey, [
+            'daysWithTargetExercises' => json_encode($daysWithTargetExercises),
+        ]);
+
+        return response()->json([
+            'message' => 'Workout updated successfully'
+        ], 201);
+    }
+
+    public function completeWorkout(Request $request)
+    {
+        // Get user key from token
+        $token = $request->header('Authorization');
+        $userKey = Redis::get('auth:tokens:' . $token);
+
+        if (!$userKey) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+
+        $day = $request->day;
+
+        // Add workout data to the existing user workout plan
+        $user = Redis::hgetall($userKey);
+        $daysCompleted = json_decode($user['daysCompleted']);
+        $daysCompleted->{$day} = "1";
+
+        // Update user data in Redis
+        Redis::hmset($userKey, [
+            'daysCompleted' => json_encode($daysCompleted),
+        ]);
+
+        return response()->json([
+            'message' => 'Workout completed successfully'
         ], 201);
     }
 

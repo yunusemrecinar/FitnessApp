@@ -153,15 +153,27 @@ function TargetExercises({ route, navigation }) {
                     ...daysWithNotes,
                     [selectedDays[currentDay]]: notes,
                 });
+                const daysCompletedJ = JSON.stringify({
 
-                await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysWithNotesJ);
+                });
+
+                await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysCompletedJ, daysWithNotesJ);
                 authCtx.authenticate(token);
-                authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ, daysWithNotes: daysWithNotesJ }));
+                authCtx.setAllPlan(JSON.stringify({ selectedDays: selectedDaysJ, daysWithTargetArea: daysWithTargetAreaJ, daysWithTargetExercises: daysWithTargetExercisesJ, daysCompleted: daysCompletedJ, daysWithNotes: daysWithNotesJ }));
                 navigation.replace('AuthenticatedStack', {
                     screen: 'Home',
                 });
             } catch (error) {
-                Alert.alert('Error', error.message || 'Something went wrong');
+                if (error.response && error.response.status === 401) {
+                    authCtx.logout();
+                    Alert.alert('Session Expired', 'Please log in again');
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'AuthStack' }]  // Reset to AuthStack
+                    });
+                } else {
+                    Alert.alert('Error', error.response.message || 'Something went wrong');
+                }
             }
             return;
         }

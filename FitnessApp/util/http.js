@@ -83,14 +83,15 @@ export const updatePassword = async (email, password) => {
 };
 
 // COMPLETE ONBOARDING
-export const completeOnboarding = async (token, selectedDays, daysWithTargetArea, daysWithTargetExercises, daysWithNotes) => {
+export const completeOnboarding = async (token, selectedDays, daysWithTargetArea, daysWithTargetExercises, daysCompleted, daysWithNotes) => {
     try {
         const response = await axios.post(`${API_URL}/completeOnBoarding`, 
             {
                 selectedDays: selectedDays,
                 daysWithTargetArea: daysWithTargetArea,
                 daysWithTargetExercises: daysWithTargetExercises,
-                daysWithNotes: daysWithNotes
+                daysWithNotes: daysWithNotes,
+                daysCompleted: daysCompleted
             },
             {
                 headers: {
@@ -102,7 +103,7 @@ export const completeOnboarding = async (token, selectedDays, daysWithTargetArea
         
         return data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -123,7 +124,27 @@ export const addNewWorkout = async (token, workout) => {
         
         return data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
+    }
+}
+
+export const completeWorkout = async (token, day) => {
+    try {
+        const response = await axios.post(`${API_URL}/completeWorkout`, 
+            {
+                day: day
+            },
+            {
+                headers: {
+                    Authorization: token,
+                },
+            }
+        );
+        const data = response.data;
+        
+        return data;
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -139,7 +160,7 @@ export const getUser = async () => {
         const user = response.data;
         return user;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -155,6 +176,6 @@ export const getUserProfile = async (token) => {
 
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
