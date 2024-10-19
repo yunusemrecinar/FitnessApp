@@ -214,6 +214,7 @@ class AuthController extends Controller
         }
 
         $day = $request->day;
+        $completedExercises = $request->completedExercises;
 
         // Add workout data to the existing user workout plan
         $user = Redis::hgetall($userKey);
@@ -223,6 +224,7 @@ class AuthController extends Controller
         // Update user data in Redis
         Redis::hmset($userKey, [
             'daysCompleted' => json_encode($daysCompleted),
+            'daysWithTargetExercises' => json_encode($completedExercises),
         ]);
 
         return response()->json([

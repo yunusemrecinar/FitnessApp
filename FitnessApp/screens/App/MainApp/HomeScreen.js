@@ -10,6 +10,40 @@ import IconShare from '../../../components/ui/Icon';
 import { AuthContext } from '../../../store/auth-context';
 import { completeWorkout } from '../../../util/http';
 
+const exerciseLabel = {
+    'bench_press': 'Bench Press',
+    'squat': 'Squat',
+    'deadlift': 'Deadlift',
+    'pull_up': 'Pull-up',
+    'push_up': 'Push-up',
+    'plank': 'Plank',
+    'lunges': 'Lunges',
+    'leg_press': 'Leg Press',
+    'leg_curl': 'Leg Curl',
+    'leg_extension': 'Leg Extension',
+    'shoulder_press': 'Shoulder Press',
+    'bicep_curl': 'Bicep Curl',
+    'tricep_extension': 'Tricep Extension',
+    'lat_pulldown': 'Lat Pulldown',
+    'chest_fly': 'Chest Fly',
+    'chest_press': 'Chest Press',
+    'cable_row': 'Cable Row',
+    'leg_raise': 'Leg Raise',
+    'russian_twist': 'Russian Twist',
+    'bicycle_crunch': 'Bicycle Crunch',
+    'reverse_crunch': 'Reverse Crunch',
+    'mountain_climber': 'Mountain Climber',
+    'burpees': 'Burpees',
+    'jumping_jacks': 'Jumping Jacks',
+    'high_knees': 'High Knees',
+    'butt_kicks': 'Butt Kicks',
+    'squat_jumps': 'Squat Jumps',
+    'lunges_with_twist': 'Lunges with Twist',
+    'side_plank': 'Side Plank',
+    'superman': 'Superman',
+    'glute_bridge': 'Glute Bridge',
+};
+
 const HomeScreen = () => {
     const authCtx = useContext(AuthContext);
     const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
@@ -59,7 +93,8 @@ const HomeScreen = () => {
                             <Text style={styles.fNumberText}>{index + 1}</Text>
                         </View>
                         <View style={styles.fDescription}>
-                            <Text style={styles.fExerciseName}>{exercise.exercise}</Text>
+                            <Text style={styles.fExerciseWeight}>{`Weight: ${weight ? (weight + ' kg') : '??'}`}</Text>
+                            <Text style={styles.fExerciseName}>{exerciseLabel[exercise.exercise]}</Text>
                             <Text style={styles.fExerciseDetails}>{`${exercise.sets}   x${exercise.reps}`}</Text>
                         </View>
                     </View>
@@ -113,12 +148,16 @@ const HomeScreen = () => {
         const completedWorkoutDay = selectedDay;
 
         try {
-            const response = await completeWorkout(token, completedWorkoutDay);
-
             // Safely update the workoutPlans context with the new data
             const daysCompleted = typeof workoutPlans['daysCompleted'] === 'string' 
             ? JSON.parse(workoutPlans['daysCompleted']) 
             : workoutPlans['daysCompleted'];
+
+            const daysWithTargetExercises = typeof workoutPlans['daysWithTargetExercises'] === 'string'
+            ? JSON.parse(workoutPlans['daysWithTargetExercises'])
+            : workoutPlans['daysWithTargetExercises'];
+
+            const response = await completeWorkout(token, completedWorkoutDay, daysWithTargetExercises);
 
             // update the workoutPlans context with the new data
             const updatedWorkoutPlans = {
@@ -410,6 +449,11 @@ const styles = StyleSheet.create({
         color: '#B4B4B4',
         fontFamily: 'roboto-regular',
         fontSize: 16,
+    },
+    fExerciseWeight: {
+        color: '#B4B4B4',
+        fontFamily: 'roboto-mediumitalic',
+        fontSize: 12,
     },
     /* Flat List Exercise */
     exerciseCard: {

@@ -281,6 +281,7 @@ const App = () => {
     'baloo-bold': require('./assets/fonts/BalooBhaijaan2-Bold.ttf'),
     'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf'),
     'roboto-medium': require('./assets/fonts/Roboto-Medium.ttf'),
+    'roboto-mediumitalic': require('./assets/fonts/Roboto-MediumItalic.ttf'),
     'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
     'roboto-condensed-regular': require('./assets/fonts/RobotoCondensed-Regular.ttf'),
     'roboto-condensed-medium': require('./assets/fonts/RobotoCondensed-Medium.ttf'),

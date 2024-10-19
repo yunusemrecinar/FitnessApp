@@ -190,6 +190,7 @@ function AddWorkoutScreen({ navigation }) {
             const oldArea = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithTargetArea);
             const oldExercises = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithTargetExercises);
             const oldNotes = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysWithNotes);
+            const oldDaysCompleted = JSON.parse(JSON.parse(authCtx.allWorkoutPlan).daysCompleted);
             const updatedWorkoutPlans = {
                 // Assuming 'selectedDays' and other keys exist in the plan
                 selectedDays: JSON.stringify([...oldDays, newWorkout.day]),
@@ -204,7 +205,10 @@ function AddWorkoutScreen({ navigation }) {
                 daysWithNotes: JSON.stringify({
                     ...oldNotes,
                     [newWorkout.day]: newWorkout.notes
-                })
+                }),
+                daysCompleted: JSON.stringify({
+                    ...oldDaysCompleted,
+                }),
             };
 
             authCtx.setAllPlan(JSON.stringify(updatedWorkoutPlans));

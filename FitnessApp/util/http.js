@@ -128,11 +128,12 @@ export const addNewWorkout = async (token, workout) => {
     }
 }
 
-export const completeWorkout = async (token, day) => {
+export const completeWorkout = async (token, day, completedExercises) => {
     try {
         const response = await axios.post(`${API_URL}/completeWorkout`, 
             {
-                day: day
+                day: day,
+                completedExercises: completedExercises
             },
             {
                 headers: {
