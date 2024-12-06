@@ -11,6 +11,8 @@ import Logo from "../../components/ui/Logo";
 import { AuthContext } from '../../store/auth-context';
 import { getUserProfile, googleLoginRegister, login } from "../../util/http";
 
+import i18n from '../../util/i18n';
+
 const androidClientId = '733094219236-3jtjnt0g94s48l58mlt252q6il7kph68.apps.googleusercontent.com';
 const iosClientId = '733094219236-3ug4c0ue4glrh1gjap95qisa8mc74sn5.apps.googleusercontent.com';
 
@@ -69,9 +71,9 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = async () => {
         try {
-            Alert.alert('Success', 'Logged in successfully');
             const response = await login(email, password);
-            
+            Alert.alert('Success', 'Logged in successfully');
+
             /* Navigating Logged In User Begin */
             if (response.user.is_first_time === 'true') {
                 navigation.replace('OnBoarding', {
@@ -97,7 +99,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.container}>
                 <Logo style={{ color: '#E3E3E3' }} />
                 <View style={styles.inputForm}>
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>{i18n.t('email')}</Text>
                     <TextInput 
                         value={email} 
                         onChangeText={setEmail} 

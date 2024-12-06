@@ -14,7 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.FitnessApp",
-       "usesAppleSignIn": true
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +26,10 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-apple-authentication"],
+    "plugins": [
+      "expo-apple-authentication",
+      "expo-localization"
+    ],
     "extra": {
       "eas": {
         "projectId": "08b11dfd-5866-4c89-80fd-c0952cbba62a"

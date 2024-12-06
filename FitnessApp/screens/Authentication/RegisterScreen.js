@@ -54,12 +54,13 @@ const RegisterScreen = ({ navigation }) => {
         handleToken();
     }, [response]);
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
         try {
             await register(email, password);
             const response = await login(email, password);
             Alert.alert('Success', 'Logged in successfully');
-            authCtx.authenticate(response);
+            const token = response.token;
+            authCtx.authenticate(token);
             navigation.replace('AuthenticatedStack');
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
@@ -100,7 +101,7 @@ const RegisterScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <FlatButton onPress={handleLogin}>Sign Up</FlatButton>
+                <FlatButton onPress={handleRegister}>Sign Up</FlatButton>
                 <View style={styles.dividerContainer}>
                     <View style={styles.line} />
                     <Text style={styles.text}>Or</Text>

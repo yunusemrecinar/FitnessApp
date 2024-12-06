@@ -49,6 +49,7 @@ const HomeScreen = () => {
     const [currentDay, setCurrentDay] = useState(moment().format('dddd'));
     const [selectedDay, setSelectedDay] = useState(moment().format('YYYY-MM-DD'));
     const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => { // when the component is mounted
         authCtx.fetchWorkoutPlan();
@@ -144,6 +145,7 @@ const HomeScreen = () => {
     };
 
     const handleCompleteWorkout = async () => {
+        setLoading(true); // Start loading
         const token = authCtx.token;
         const completedWorkoutDay = selectedDay;
 
@@ -182,6 +184,8 @@ const HomeScreen = () => {
             } else {
                 Alert.alert('Error', error.response.message || 'Something went wrong');
             }
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -235,8 +239,8 @@ const HomeScreen = () => {
                             Completed
                         </FlatButton>
                     ) : (
-                        <FlatButton onPress={handleCompleteWorkout}>
-                            Complete
+                        <FlatButton onPress={handleCompleteWorkout} disabled={loading}>
+                            {loading ? 'Completing...' : 'Complete'}
                         </FlatButton>
                     )}
                     </View>
