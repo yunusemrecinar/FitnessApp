@@ -24,6 +24,12 @@ const WorkoutPlanScreen = ({ route, navigation }) => {
     const { token } = route.params;
     const [selectedCard, setSelectedCard] = useState('Weekly');
 
+    const handleBack = () => {
+        navigation.replace('Welcome', {
+            token: token
+        });
+    }
+
     const handleNext = () => {
         if (selectedCard === 'Weekly') {
             navigation.replace('WorkoutSchedule', {
@@ -62,7 +68,7 @@ const WorkoutPlanScreen = ({ route, navigation }) => {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={[styles.button, styles.backButton]}
-                    onPress={() => navigation.replace('Welcome')}    
+                    onPress={handleBack}    
                     >
                     <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>

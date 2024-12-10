@@ -46,7 +46,7 @@ function WorkoutsScreen({ route, navigation }) {
                                 <View style={styles.workoutCard}>
                                     <View style={[styles.workoutRow, styles.workoutTarget]}>
                                         <Text style={styles.workoutRowTitle}>Target:</Text>
-                                        {workoutPlans ?? JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
+                                        {JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
                                             <Text style={styles.workoutRowText} key={index}>
                                                 {target}{index < array.length - 1 ? ', ' : ''}
                                             </Text>
@@ -55,13 +55,13 @@ function WorkoutsScreen({ route, navigation }) {
                                     <View style={[styles.workoutRow, styles.workoutExercises]}>
                                         <Text style={styles.workoutRowTitle}>Exercises:</Text>
                                         <Text style={styles.workoutRowText}>
-                                            {workoutPlans ?? JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
+                                            {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
                                         </Text>
                                     </View>
                                     <View style={[styles.workoutRow, styles.workoutNote]}>
                                         <Text style={styles.workoutRowTitle}>Note:</Text>
                                         <Text style={styles.workoutRowText}>
-                                            {workoutPlans ?? JSON.parse(workoutPlans['daysWithNotes'])[workoutDay]}
+                                            {JSON.parse(workoutPlans['daysWithNotes'])[workoutDay]}
                                         </Text>
                                     </View>
                                 </View>

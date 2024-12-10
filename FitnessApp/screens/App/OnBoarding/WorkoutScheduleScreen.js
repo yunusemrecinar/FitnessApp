@@ -31,6 +31,12 @@ function WorkoutScheduleScreen({ route, navigation }) {
         });        
     }
 
+    const handleBack = () => {
+        navigation.replace('WorkoutPlan', {
+            token: token
+        });
+    }
+
     const DayButtons = () => {
         return (
             <View style={styles.dayButtonContainer}>
@@ -64,7 +70,7 @@ function WorkoutScheduleScreen({ route, navigation }) {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={[styles.button, styles.backButton]}
-                    onPress={() => navigation.replace('WorkoutPlan')}
+                    onPress={handleBack}
                 >
                     <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
