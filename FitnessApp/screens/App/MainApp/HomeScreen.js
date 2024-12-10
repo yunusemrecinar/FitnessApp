@@ -191,7 +191,7 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} /> 
+            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} trainingDays={[]} /> 
             <View style={styles.line} />
             {workoutPlans &&
                 workoutPlans['daysWithTargetArea'] &&
@@ -254,61 +254,91 @@ const HomeScreen = () => {
 
 const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay }) => {
     const [weekDays, setWeekDays] = useState([]);
-
     const calendarWidth = 350; // Total calendar width based on container width
     const dayWidth = calendarWidth / 7; // Width of each day
-    const animatedPosition = useSharedValue(0); // Starting position for the highlight
+    const animatedPosition = useSharedValue(0);
 
     useEffect(() => {
         const getCurrentWeek = () => {
             const today = moment();
             const startOfWeek = today.clone().startOf('isoWeek');
             const days = [];
-
             for (let i = 0; i < 7; i++) {
                 days.push(startOfWeek.clone().add(i, 'days'));
             }
-
             return days;
         };
 
         const days = getCurrentWeek();
         setWeekDays(days);
 
-        // Initially set the animated position to today's day
         const todayIndex = days.findIndex(day => day.format('YYYY-MM-DD') === selectedDay);
-        animatedPosition.value = todayIndex * dayWidth;
+        animatedPosition.value = todayIndex * dayWidth; // Highlight current day initially
     }, []);
 
     const handleDayPress = (day, index) => {
         setSelectedDay(day.format('YYYY-MM-DD'));
         setCurrentDay(day.format('dddd'));
-        animatedPosition.value = withTiming(index * dayWidth, { duration: 300 }); // Animate to the new day position
+        animatedPosition.value = withTiming(index * dayWidth, { duration: 300 });
     };
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ translateX: animatedPosition.value }],
-        };
-    });
+    const trainingDays = {
+        "2024-12-02": true, // Training planned
+        "2024-12-04": true, // Training planned
+        "2024-12-05": true, // Training planned
+    };
+    
+    const completedDays = {
+        "2024-12-02": true, // Workout completed
+        "2024-12-05": true, // Workout completed
+    };
+    
 
     return (
         <View style={styles.calendarContainer}>
             <View style={{ flexDirection: 'row' }}>
                 <Animated.View
                     style={[
-                        styles.highlight, // Animated highlight border
-                        animatedStyle
+                        styles.highlight,
+                        { transform: [{ translateX: animatedPosition.value }] },
                     ]}
                 />
-                {weekDays.map((day, index) => (
-                    <TouchableOpacity key={index} onPress={() => handleDayPress(day, index)}>
-                        <View style={styles.dayContainer}>
-                            <Text style={[styles.dayText, selectedDay === day.format('YYYY-MM-DD') && [styles.selectedDayText]]}>{day.format('DD')}</Text>
-                            <Text style={[styles.dayText, selectedDay === day.format('YYYY-MM-DD') && styles.selectedDayText]}>{day.format('ddd')}</Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                {weekDays.map((day, index) => {
+                    const formattedDay = day.format('YYYY-MM-DD');
+                    const isTrainingDay = trainingDays[formattedDay]; // Check if it's a training day
+                    const isCompleted = completedDays[formattedDay]; // Check if completed
+                    const isMissed = isTrainingDay && !isCompleted; // Missed training day
+
+                    return (
+                        <TouchableOpacity key={index} onPress={() => handleDayPress(day, index)}>
+                            <View
+                                style={[
+                                    styles.dayContainer,
+                                    isTrainingDay && styles.trainingDayBorder, // Add border for training days
+                                    isMissed && styles.missedTrainingBorder, // Red border for missed training days
+                                    selectedDay === formattedDay && styles.selectedDayBorder, // Highlight selected day
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.dayText,
+                                        selectedDay === formattedDay && styles.selectedDayText,
+                                    ]}
+                                >
+                                    {day.format('DD')}
+                                </Text>
+                                <Text
+                                    style={[
+                                        styles.dayText,
+                                        selectedDay === formattedDay && styles.selectedDayText,
+                                    ]}
+                                >
+                                    {day.format('ddd')}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
         </View>
     );
@@ -345,7 +375,7 @@ const styles = StyleSheet.create({
         gap: 11,
     },
     selectedDayText: {
-        color: '#67F2D1',
+        color: '#171717',
     },
     dayText: {
         color: '#FFFFFF',
@@ -411,6 +441,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 15,
         gap: 11,
+    },
+    trainingDayStyle: {
+        backgroundColor: '#2D8CFF', // A light blue for training days
+        borderRadius: 8,
+    },
+    selectedDayStyle: {
+        backgroundColor: '#67F2D1',
     },
     /* Flat List Exercise */
     fCard: {
@@ -533,6 +570,50 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },    
+    calendarContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
+        position: 'relative',
+    },
+    dayContainer: {
+        alignItems: 'center',
+        paddingVertical: 10,
+        width: 50,
+    },
+    dayText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+    },
+    trainingDayBorder: {
+        borderWidth: 2,
+        borderColor: '#67F2D1', // Subtle green border for training days
+        borderRadius: 8,
+    },
+    missedTrainingBorder: {
+        borderWidth: 2,
+        borderColor: '#FF6B6B', // Red border for missed training days
+        borderRadius: 8,
+    },
+    selectedDayBorder: {
+        borderWidth: 2,
+        borderColor: '#FFFFFF', // Highlighted border for selected day
+        borderRadius: 8,
+    },
+    selectedDayText: {
+        color: '#67F2D1',
+    },
+    highlight: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: 50,
+        borderRadius: 8,
+        borderColor: '#67F2D1',
+        borderWidth: 1,
+        zIndex: -1,
+    },
 });
 
 export default HomeScreen;

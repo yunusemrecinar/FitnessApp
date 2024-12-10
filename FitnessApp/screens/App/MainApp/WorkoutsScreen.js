@@ -8,6 +8,7 @@ import { AuthContext } from "../../../store/auth-context";
 function WorkoutsScreen({ route, navigation }) {
     const authCtx = useContext(AuthContext);
     const [workoutPlans, setWorkoutPlans] = useState(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
     useEffect(() => { // when the component is mounted
         authCtx.fetchWorkoutPlan();
@@ -31,7 +32,9 @@ function WorkoutsScreen({ route, navigation }) {
             </View>
             <ScrollView style={styles.workouts}>
                 <View style={styles.workoutsView}>
-                    {workoutPlans['selectedDays'] && JSON.parse(workoutPlans['selectedDays']).map((workoutDay, index) => (
+                    {workoutPlans['selectedDays'] && JSON.parse(workoutPlans['selectedDays'])
+                    .sort((a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b))
+                    .map((workoutDay, index) => (
                         <View key={index}>
                             <Text style={styles.workoutTitleText}>{workoutDay}</Text>
                             <TouchableOpacity
@@ -43,7 +46,7 @@ function WorkoutsScreen({ route, navigation }) {
                                 <View style={styles.workoutCard}>
                                     <View style={[styles.workoutRow, styles.workoutTarget]}>
                                         <Text style={styles.workoutRowTitle}>Target:</Text>
-                                        {JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
+                                        {workoutPlans ?? JSON.parse(workoutPlans['daysWithTargetArea'])[workoutDay].map((target, index, array) => (
                                             <Text style={styles.workoutRowText} key={index}>
                                                 {target}{index < array.length - 1 ? ', ' : ''}
                                             </Text>
@@ -52,13 +55,13 @@ function WorkoutsScreen({ route, navigation }) {
                                     <View style={[styles.workoutRow, styles.workoutExercises]}>
                                         <Text style={styles.workoutRowTitle}>Exercises:</Text>
                                         <Text style={styles.workoutRowText}>
-                                            {JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
+                                            {workoutPlans ?? JSON.parse(workoutPlans['daysWithTargetExercises'])[workoutDay].length} total
                                         </Text>
                                     </View>
                                     <View style={[styles.workoutRow, styles.workoutNote]}>
                                         <Text style={styles.workoutRowTitle}>Note:</Text>
                                         <Text style={styles.workoutRowText}>
-                                            {JSON.parse(workoutPlans['daysWithNotes'])[workoutDay]}
+                                            {workoutPlans ?? JSON.parse(workoutPlans['daysWithNotes'])[workoutDay]}
                                         </Text>
                                     </View>
                                 </View>
