@@ -35,29 +35,42 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  try {
     const redis = req.app.locals.redis;
     const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
-  
     const userKey = `user:${email}`;
     const user = await redis.hGetAll(userKey);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || Object.keys(user).length === 0) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-  
+
+    if (!user.password) {
+      return res.status(500).json({ message: 'User data corrupted: password missing' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
     const token = randomUUID();
     await redis.set(`auth:tokens:${token}`, userKey);
     await redis.expire(`auth:tokens:${token}`, 3600);
-  
+
     res.status(200).json({
       token,
       message: 'Login successful',
       user,
     });
+  } catch (error) {
+    console.error('Login Error:', error.message);
+    res.status(500).json({ message: 'An error occurred during login' });
+  }
 };
 
 exports.googleLoginRegister = async (req, res) => {
