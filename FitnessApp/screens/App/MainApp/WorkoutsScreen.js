@@ -14,6 +14,8 @@ function WorkoutsScreen({ route, navigation }) {
         authCtx.fetchWorkoutPlan();
     }, []);
 
+    console.log(workoutPlans['selectedDays'] && JSON.parse(JSON.parse(workoutPlans['selectedDays'])));
+
     useEffect(() => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
     }, [authCtx.allWorkoutPlan]);

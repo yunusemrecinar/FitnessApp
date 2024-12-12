@@ -58,10 +58,15 @@ const RegisterScreen = ({ navigation }) => {
         try {
             await register(email, password);
             const response = await login(email, password);
-            Alert.alert('Success', 'Logged in successfully');
+            Alert.alert('Success', 'Signed in successfully');
             const token = response.token;
             authCtx.authenticate(token);
-            navigation.replace('AuthenticatedStack');
+            navigation.replace('OnBoarding', {
+                screen: 'Welcome',
+                params: {
+                    token: response.token,
+                },
+            });
         } catch (error) {
             Alert.alert('Error', error.message || 'Something went wrong');
         }

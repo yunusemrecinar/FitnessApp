@@ -7,6 +7,7 @@ function ForgotPasswordLandingScreen({ navigation }) {
 
     function handleSendEmail() {
         const randomCode = Math.floor(100000 + Math.random() * 900000);
+        console.log(randomCode);
         navigation.replace("ForgotPasswordCode", { email: email, emailCode: randomCode.toString() });
     }
 
