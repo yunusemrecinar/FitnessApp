@@ -59,6 +59,8 @@ const HomeScreen = () => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
     }, [authCtx.allWorkoutPlan]);
 
+    console.log(Object.keys(JSON.parse(workoutPlans.daysCompleted)));
+
     const updateExerciseWeight = (exerciseId, weight) => {
         setWorkoutPlans((prevWorkoutPlans) => {
             const updatedPlans = { ...prevWorkoutPlans };
@@ -191,7 +193,7 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} trainingDays={[]} /> 
+            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} trainingDays={workoutPlans.selectedDays} completedDay={workoutPlans.daysCompleted} /> 
             <View style={styles.line} />
             {workoutPlans &&
                 workoutPlans['daysWithTargetArea'] &&
@@ -252,11 +254,19 @@ const HomeScreen = () => {
     
 };
 
-const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay }) => {
+const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay, trainingDays, completedDay }) => {
     const [weekDays, setWeekDays] = useState([]);
     const calendarWidth = 350; // Total calendar width based on container width
     const dayWidth = calendarWidth / 7; // Width of each day
     const animatedPosition = useSharedValue(0);
+    const completedDaysArray = Object.keys(JSON.parse(completedDay));
+    const trainingDaysDates = [];
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: animatedPosition.value }],
+        };
+    });
 
     useEffect(() => {
         const getCurrentWeek = () => {
@@ -272,8 +282,12 @@ const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay }) => {
         const days = getCurrentWeek();
         setWeekDays(days);
 
+        const trainingDaysDates = days
+            .filter(day => trainingDays.includes(day.format('dddd')))
+            .map(day => day.format('YYYY-MM-DD'));
+
         const todayIndex = days.findIndex(day => day.format('YYYY-MM-DD') === selectedDay);
-        animatedPosition.value = todayIndex * dayWidth; // Highlight current day initially
+        animatedPosition.value = todayIndex * dayWidth;
     }, []);
 
     const handleDayPress = (day, index) => {
@@ -282,41 +296,24 @@ const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay }) => {
         animatedPosition.value = withTiming(index * dayWidth, { duration: 300 });
     };
 
-    const trainingDays = {
-        "2024-12-02": true, // Training planned
-        "2024-12-04": true, // Training planned
-        "2024-12-05": true, // Training planned
-    };
-    
-    const completedDays = {
-        "2024-12-02": true, // Workout completed
-        "2024-12-05": true, // Workout completed
-    };
-    
-
     return (
         <View style={styles.calendarContainer}>
             <View style={{ flexDirection: 'row' }}>
-                <Animated.View
-                    style={[
-                        styles.highlight,
-                        { transform: [{ translateX: animatedPosition.value }] },
-                    ]}
-                />
+                <Animated.View style={[styles.highlight, animatedStyle]} />
                 {weekDays.map((day, index) => {
                     const formattedDay = day.format('YYYY-MM-DD');
-                    const isTrainingDay = trainingDays[formattedDay]; // Check if it's a training day
-                    const isCompleted = completedDays[formattedDay]; // Check if completed
-                    const isMissed = isTrainingDay && !isCompleted; // Missed training day
+                    const isTrainingDay = trainingDaysDates.includes(formattedDay);
+                    const isCompleted = completedDaysArray.includes(formattedDay);
+                    const isMissed = isTrainingDay && !isCompleted;
 
                     return (
                         <TouchableOpacity key={index} onPress={() => handleDayPress(day, index)}>
                             <View
                                 style={[
                                     styles.dayContainer,
-                                    isTrainingDay && styles.trainingDayBorder, // Add border for training days
-                                    isMissed && styles.missedTrainingBorder, // Red border for missed training days
-                                    selectedDay === formattedDay && styles.selectedDayBorder, // Highlight selected day
+                                    isTrainingDay && styles.trainingDayBorder,
+                                    isMissed && styles.missedTrainingBorder,
+                                    selectedDay === formattedDay && styles.selectedDayBorder,
                                 ]}
                             >
                                 <Text

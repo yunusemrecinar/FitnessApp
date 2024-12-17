@@ -25,8 +25,8 @@ const LoginScreen = ({ navigation }) => {
         iosClientId
     };
 
-    const [email, setEmail] = useState('yunus3@gmail.com');
-    const [password, setPassword] = useState('yunus3');
+    const [email, setEmail] = useState('son1@gmail.com');
+    const [password, setPassword] = useState('yunus');
     const [showPassword, setShowPassword] = useState(false);
     const [request, response, promptAsync] = Google.useAuthRequest(config);
 

@@ -153,9 +153,7 @@ function TargetExercises({ route, navigation }) {
                     ...daysWithNotes,
                     [selectedDays[currentDay]]: notes,
                 });
-                const daysCompletedJ = JSON.stringify({
-
-                });
+                const daysCompletedJ = JSON.stringify({});
 
                 await completeOnboarding(token, selectedDaysJ, daysWithTargetAreaJ, daysWithTargetExercisesJ, daysCompletedJ, daysWithNotesJ);
                 authCtx.authenticate(token);

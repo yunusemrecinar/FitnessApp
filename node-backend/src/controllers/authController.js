@@ -23,12 +23,17 @@ exports.register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const now = new Date().toISOString();
+
   await redis.hSet(userKey, {
     id: uuidv4(),
     email,
     password: hashedPassword,
     is_first_time: 'true',
+    created_at: now,
+    updated_at: now,
   });
+
 
   const user = await redis.hGetAll(userKey);
   return res.status(201).json({ message: 'User registered successfully', user });
@@ -83,6 +88,8 @@ exports.googleLoginRegister = async (req, res) => {
   
     const userKey = `user:${user.email}`;
   
+    const now = new Date().toISOString();
+
     if (!(await redis.exists(userKey))) {
       await redis.hSet(userKey, {
         id: user.id,
@@ -93,7 +100,11 @@ exports.googleLoginRegister = async (req, res) => {
         picture: user.picture || '',
         verified_email: 'true',
         is_first_time: 'true',
+        created_at: now,
+        updated_at: now,
       });
+    } else {
+      await redis.hSet(userKey, { updated_at: now });
     }
   
     await redis.set(`auth:tokens:${token}`, userKey);
@@ -122,8 +133,14 @@ exports.updatePassword = async (req, res) => {
     }
   
     const hashedPassword = await bcrypt.hash(password, 10);
-    await redis.hSet(userKey, 'password', hashedPassword);
-  
+    
+    const now = new Date().toISOString();
+
+    await redis.hSet(userKey, {
+      password: hashedPassword,
+      updated_at: now,
+    });
+
     res.status(201).json({ message: 'Password updated successfully' });
 };
 
@@ -138,13 +155,16 @@ exports.completeOnboarding = async (req, res) => {
   
     const { selectedDays, daysWithTargetArea, daysWithTargetExercises, daysWithNotes, daysCompleted } = req.body;
   
+    const now = new Date().toISOString();
+
     await redis.hSet(userKey, {
       is_first_time: 'false',
-      selectedDays: JSON.stringify(selectedDays),
-      daysWithTargetArea: JSON.stringify(daysWithTargetArea),
-      daysWithTargetExercises: JSON.stringify(daysWithTargetExercises),
-      daysWithNotes: JSON.stringify(daysWithNotes),
-      daysCompleted: JSON.stringify(daysCompleted),
+      selectedDays: selectedDays,
+      daysWithTargetArea: daysWithTargetArea,
+      daysWithTargetExercises: daysWithTargetExercises,
+      daysWithNotes: daysWithNotes,
+      daysCompleted: daysCompleted,
+      updated_at: now,
     });
   
     res.status(201).json({ message: 'Onboarding completed successfully' });
@@ -174,11 +194,14 @@ exports.addNewWorkout = async (req, res) => {
     const daysWithNotes = JSON.parse(user.daysWithNotes || '{}');
     daysWithNotes[workout.day] = workout.notes;
   
+    const now = new Date().toISOString();
+
     await redis.hSet(userKey, {
       selectedDays: JSON.stringify(selectedDays),
       daysWithTargetArea: JSON.stringify(daysWithTargetArea),
       daysWithTargetExercises: JSON.stringify(daysWithTargetExercises),
       daysWithNotes: JSON.stringify(daysWithNotes),
+      updated_at: now,
     });
   
     res.status(201).json({ message: 'Workout added successfully' });
@@ -199,10 +222,13 @@ exports.updateWorkoutExercise = async (req, res) => {
     const daysWithTargetExercises = JSON.parse(user.daysWithTargetExercises || '{}');
     daysWithTargetExercises[workout.day] = workout.exercises;
   
+    const now = new Date().toISOString();
+
     await redis.hSet(userKey, {
       daysWithTargetExercises: JSON.stringify(daysWithTargetExercises),
+      updated_at: now,
     });
-  
+
     res.status(201).json({ message: 'Workout updated successfully' });
 };
 
@@ -221,9 +247,12 @@ exports.completeWorkout = async (req, res) => {
     const daysCompleted = JSON.parse(user.daysCompleted || '{}');
     daysCompleted[day] = '1';
   
+    const now = new Date().toISOString();
+
     await redis.hSet(userKey, {
       daysCompleted: JSON.stringify(daysCompleted),
       daysWithTargetExercises: JSON.stringify(completedExercises),
+      updated_at: now,
     });
   
     res.status(201).json({ message: 'Workout completed successfully' });
