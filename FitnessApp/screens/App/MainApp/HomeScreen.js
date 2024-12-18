@@ -59,8 +59,6 @@ const HomeScreen = () => {
         setWorkoutPlans(authCtx.allWorkoutPlan && JSON.parse(authCtx.allWorkoutPlan));
     }, [authCtx.allWorkoutPlan]);
 
-    console.log(Object.keys(JSON.parse(workoutPlans.daysCompleted)));
-
     const updateExerciseWeight = (exerciseId, weight) => {
         setWorkoutPlans((prevWorkoutPlans) => {
             const updatedPlans = { ...prevWorkoutPlans };
@@ -193,7 +191,7 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} trainingDays={workoutPlans.selectedDays} completedDay={workoutPlans.daysCompleted} /> 
+            <Calendar setCurrentDay={setCurrentDay} selectedDay={selectedDay} setSelectedDay={setSelectedDay} trainingDays={workoutPlans ? workoutPlans.selectedDays : []} completedDay={workoutPlans?.daysCompleted} /> 
             <View style={styles.line} />
             {workoutPlans &&
                 workoutPlans['daysWithTargetArea'] &&
@@ -259,8 +257,8 @@ const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay, trainingDays, co
     const calendarWidth = 350; // Total calendar width based on container width
     const dayWidth = calendarWidth / 7; // Width of each day
     const animatedPosition = useSharedValue(0);
-    const completedDaysArray = Object.keys(JSON.parse(completedDay));
-    const trainingDaysDates = [];
+    const completedDaysArray = completedDay ? Object.keys(JSON.parse(completedDay)) : [];
+    let trainingDaysDates = [];
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
@@ -282,7 +280,7 @@ const Calendar = ({ setCurrentDay, selectedDay, setSelectedDay, trainingDays, co
         const days = getCurrentWeek();
         setWeekDays(days);
 
-        const trainingDaysDates = days
+        trainingDaysDates = days
             .filter(day => trainingDays.includes(day.format('dddd')))
             .map(day => day.format('YYYY-MM-DD'));
 

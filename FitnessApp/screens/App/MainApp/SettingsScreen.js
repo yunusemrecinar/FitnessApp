@@ -7,31 +7,6 @@ import { AuthContext } from "../../../store/auth-context";
 
 const SettingsScreen = ({ navigation }) => {
     const authCtx = useContext(AuthContext);
-    // const [user, setUser] = useState(null);
-
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const userData = await getUser();
-    //             setUser(userData);
-    //         } catch (error) {
-    //             Alert.alert('Error', error.message || 'Failed to load user data');
-    //         }
-    //     };
-
-    //     fetchUserData();
-    // }, []);
-
-    // const handleLogout = async () => {
-    //     try {
-    //         await logout();
-    //         Alert.alert('Success', 'Logged out successfully');
-    //         authCtx.logout();
-    //         navigation.replace('AuthStack');
-    //     } catch (error) {
-    //         Alert.alert('Error', error.message || 'Failed to log out');
-    //     }
-    // };
 
     function handleLogout() {
         authCtx.logout();
@@ -60,7 +35,9 @@ const SettingsScreen = ({ navigation }) => {
             <ScrollView>
                 <Text style={styles.sectionTitle}>Account</Text>
                 <View style={[styles.sectionContainer, { borderRadius: 10 }]}>
-                    <TouchableOpacity style={[styles.item, { borderTopLeftRadius: 10, borderTopRightRadius: 10 }]}>
+                    <TouchableOpacity style={[styles.item, { borderTopLeftRadius: 10, borderTopRightRadius: 10 }]}
+                        onPress={() => navigation.navigate('SettingsProfile')}
+                    >
                         <Text style={styles.itemText}>Profile</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.item}>

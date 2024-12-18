@@ -20,6 +20,7 @@ import HistoryScreen from './screens/App/MainApp/HistoryScreen';
 import HomeScreen from './screens/App/MainApp/HomeScreen';
 import ProfileScreen from './screens/App/MainApp/ProfileScreen';
 import SettingsScreen from './screens/App/MainApp/SettingsScreen';
+import SettingsProfileScreen from './screens/App/Settings/ProfileScreen';
 import WorkoutDetailScreen from './screens/App/MainApp/WorkoutDetailScreen.js';
 import WorkoutsScreen from './screens/App/MainApp/WorkoutsScreen';
 import TargetAreaScreen from './screens/App/OnBoarding/TargetAreaSceen.js';
@@ -212,6 +213,11 @@ function AuthenticatedStack() {
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SettingsProfile"
+        component={SettingsProfileScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
